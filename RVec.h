@@ -2,39 +2,26 @@
 #include <iostream>
 #include <string>
 #include <opencv2/opencv.hpp>
+#include <boost/lexical_cast.hpp>
 
-#include <EMat.h>
+using namespace std;
 
 namespace mc{
-	class RVec : public EMat{
+	class RVec{
 	private:
 		bool isValid() const;
-		bool isValid(cv::Mat mat) const;
-
+		cv::Mat mat_;
 	public:
-
+		RVec(){}
+		RVec(const cv::Mat& mat);
+		RVec(const vector<string>& content);
 		// ---------- 演算子オーバーロード ----------
-		/**
-		 * cv::Matを=で代入できるようにするための演算子オーバーロード
-		 */
-		RVec& operator=(cv::Mat mat);
+		/** cv::Matを=で代入できるようにするための演算子オーバーロード **/
+		RVec& operator=(const cv::Mat& mat);
 		double& operator[](unsigned int index);
-		// ---------- コンストラクタ ----------
-		RVec();
 
-		// 指定したサイズ，型の行列を作成します．
-		// (_type is CV_8UC1, CV_64FC3, CV_32SC(12) など)
-		/**
-		 * 指定したサイズ，型の行列を作成する
-		 */
-		RVec(int _rows, int _cols, int _type);
+		cv::Mat& m();
 
-		// 受け取ったmatの値のRVecを作る
-		RVec(const cv::Mat mat);
-
-		RVec(const vector< vector<string> > contents);
-		// ---------- ここまでコンストラクタ ----------
-
-		static RVec cast(const cv::Mat mat);
+		cv::Mat toMat(const vector<string>& content);
 	};
 }

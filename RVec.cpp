@@ -4,45 +4,37 @@ using namespace std;
 
 namespace mc{
 	bool RVec::isValid() const{
-		if(this->rows != 1)	return false;
+		if(mat_.rows != 1)	return false;
 		return true;
 	}
 
-	bool RVec::isValid(cv::Mat mat) const{
-		if(this->rows != 1)	return false;
-		return true;
+	RVec::RVec(const cv::Mat& mat) : mat_(mat){
+		if(!isValid())	throw invalid_argument("mat is not vector!");
+		mat_ = mat;
 	}
 
-	RVec& RVec::operator=(cv::Mat mat){
-		if(mat.rows != 1)	throw invalid_argument("argument can not pass to RVec");
-		this->create(1, mat.cols, CV_64F);
-		*this = mat.clone();
-		// for(int i = 0; i < mat.cols; i++){
-		// 	// this->at<double>(0, i) =  mat.at<double>(0, i);
-		// }
+	RVec::RVec(const vector<string>& content) : mat_(toMat(content)){
+		if(!isValid())	throw invalid_argument("mat is not vector!");
+	}
+
+	RVec& RVec::operator=(const cv::Mat& mat){
+		if(!isValid())	throw invalid_argument("mat is not vector!");
+		mat_ = mat;
 		return *this;
 	}
 
 	double& RVec::operator[](unsigned int index){
-		return this->at<double>(0, index);
+		return mat_.at<double>(0, index);
 	}
 
-	RVec::RVec(){}
+	cv::Mat& RVec::m(){return mat_;}
 
-	RVec::RVec(int _rows, int _cols, int _type) : EMat(_rows, _cols, _type){
-		if(!isValid())	throw invalid_argument("argument can not pass to RVec");
+	cv::Mat RVec::toMat(const vector<string>& content){
+		cv::Mat mat(1, content.size(), CV_64F);
+		for(int i = 0; i < content.size(); i++){
+			mat.at<double>(0, i) = boost::lexical_cast<double>(content[i]);
+		}
+		return mat;
 	}
 
-	RVec::RVec(const cv::Mat mat) : EMat(mat){
-		if(!isValid())	throw invalid_argument("argument can not pass to RVec");
-	}
-
-	RVec::RVec(const vector< vector<string> > contents) : EMat(contents){
-		if(!isValid())	throw invalid_argument("argument can not pass to RVec");
-	}
-
-	RVec RVec::cast(const cv::Mat mat){
-		RVec rvec(mat);
-		return rvec;
-	}
 }
