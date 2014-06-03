@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 // #include <GP.h>
-#include <EMat.h>
+#include <RVec.h>
 
 using namespace std;
 
@@ -80,6 +80,15 @@ TEST_F(EMatTest, castTest){
 	mats.push_back(mc::EMat(getTempMat(10)));
 	mats.push_back(mc::EMat(getTempMat(20)));
 	EXPECT_EQ(20, mats[2].at<double>(0, 0));
+}
+
+TEST_F(EMatTest, RVecTest){
+	ASSERT_THROW( mc::RVec rvec( getTempMat() ), invalid_argument );
+	cv::Mat mat = ( cv::Mat_<double>(1, 3) << 1,2,3 );
+	mc::RVec rvec = mat;
+	EXPECT_EQ(3, rvec[2]);
+	rvec[0] = 4;
+	EXPECT_EQ(4, rvec[0]);
 }
 
 int main( int argc, char* argv[] ){

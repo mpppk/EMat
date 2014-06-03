@@ -33,13 +33,19 @@ namespace mc{
 			return value >= min && value <= max;
 		}
 
+	protected:
+		// 自身が不正な値を持っていないかチェックする
+		// とりあえずはRVecなどで利用する為の実装
+		virtual bool isValid() const;
+		virtual bool isValid(cv::Mat mat) const;
+
 	public:
 
 		// ---------- 演算子オーバーロード ----------
 		/**
 		 * cv::Matを=で代入できるようにするための演算子オーバーロード
 		 */
-		EMat& operator=(cv::Mat mat);
+		virtual EMat& operator=(cv::Mat mat);
 
 		/**
 		 * 指定行、指定列の値をdoubleで返すためのファンクタ
@@ -68,7 +74,7 @@ namespace mc{
 
 		// ---------- cast系 ----------
 		// cv::Matをmc::EMatにキャストする
-		static EMat cast(cv::Mat mat);
+		static EMat cast(const cv::Mat mat);
 		static vector<cv::Mat> cast(vector<EMat> emats);
 		// ---------- ここまでcast系 ----------
 

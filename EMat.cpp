@@ -4,6 +4,14 @@ using namespace std;
 
 namespace mc{
 
+	bool EMat::isValid() const{
+		return true;
+	}
+
+	bool EMat::isValid(cv::Mat mat) const{
+		return true;
+	}
+
 	// =演算子のオーバーロード
 	EMat& EMat::operator=(cv::Mat mat){
 		this->create(mat.rows, mat.cols, CV_64F);
@@ -12,6 +20,7 @@ namespace mc{
 				this->at<double>(row_i, col_i) = mat.at<double>(row_i, col_i);
 			}
 		}
+		if(!isValid())	throw invalid_argument("argument can not pass to EMat");
 		return *this;
 	}
 
@@ -35,11 +44,11 @@ namespace mc{
 				this->at<double>(row_i, col_i) = mat.at<double>(row_i, col_i);
 			}
 		}
+		if(!isValid())	throw invalid_argument("argument can not pass to EMat");
 	}
 
 	// ector< vector<string> >を受け取って、それらを要素とする行列を生成する
 	EMat::EMat(const vector< vector<string> > contents){
-
 		// ----------ここから変数宣言----------
 		int vecCol = contents[0].size();// 受け取ったvectorの列数
 		// ----------ここまで変数宣言----------
@@ -54,6 +63,7 @@ namespace mc{
 				this->at<double>(i, j) = boost::lexical_cast<double>(row[j]);
 			}
 		}// ----------ここまでcontentsの要素を代入する処理----------
+		if(!isValid())	throw invalid_argument("argument can not pass to EMat");
 	}
 
 	// 要素がstringのvectorを返す
@@ -137,7 +147,7 @@ namespace mc{
 	// 	return sum;
 	// }
 
-	EMat EMat::cast(cv::Mat mat){
+	EMat EMat::cast(const cv::Mat mat){
 		EMat emat(mat);
 		return emat;
 	}
