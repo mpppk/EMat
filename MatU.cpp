@@ -26,11 +26,15 @@ namespace mc{
 	}
 
 	cv::Mat MatU::toMat(const vector<string>& content){
-		cv::Mat mat(1, content.size(), CV_64F);
+		return toRVec(content).m();
+	}
+	RVec MatU::toRVec(const vector<string>& content){
+		RVec vec(content.size());
 		for(int i = 0; i < content.size(); i++){
-			mat.at<double>(0, i) = boost::lexical_cast<double>(content[i]);
+			vec[i] = boost::lexical_cast<double>(content[i]);
 		}
-		return mat;
+		return vec;
+
 	}
 
 	cv::Mat MatU::toMat(const vector< vector<string> >& contents){// static
@@ -117,43 +121,19 @@ namespace mc{
 
 	// vec1の後ろにvec2を連結する(vec1,vec2はそれぞれ横ベクトル)
 	cv::Mat MatU::mergeRVec(const cv::Mat &vec1, const cv::Mat &vec2){
-		return mergeRVec(vec1, vec2);
+		return mergeRVec(RVec(vec1), RVec(vec2)).m();
 	}
 	mc::RVec MatU::mergeRVec(const RVec &vec1, const RVec &vec2){
-		// vec1の後ろにvec2の要素を追加していく
-		mc::RVec retVec = vec1.m().clone().reshape(1, vec1.size() + vec2.size()); 
-		for (int i = 0; i < vec2.size(); ++i){
-			retVec[ i + vec1.size() ] = vec2[i];
-		}
+		RVec retVec(vec1.size() + vec2.size());
+		for(int i = 0; i < vec1.size(); i++)	retVec[i] = vec1[i];
+		for(int i = 0; i < vec2.size(); i++)	retVec[ vec1.size() + i ] = vec2[i];
 		return retVec;
 	}
 
 	// vector内の横ベクトルをすべて連結する
 	cv::Mat MatU::mergeRVec(const vector<cv::Mat> &vecs){
 		vector<RVec> rvecs = RVec::cast(vecs);
-		RVec vec = mergeRVec(rvecs);
-		return vec.m();
-
-		// int cols = 0;
-		// vector<cv::Mat> tempVecs = vecs;
-		// // 横ベクトルかどうかのチェックと、最終的な要素数を計算
-		// for (int i = 0; i < tempVecs.size(); ++i){
-		// 	if(!isRVec(tempVecs.at(i))){
-		// 		tempVecs[i] = mergeRVec(tempVecs.at(i));
-		// 	}
-		// 	cols += tempVecs.at(i).cols;
-		// }
-
-		// cv::Mat retVec(1, cols, CV_64F);
-
-		// int retMatCol = 0;
-		// for (int vecs_i = 0; vecs_i < tempVecs.size(); ++vecs_i){
-		// 	for (int col_i = 0; col_i < tempVecs.at(vecs_i).cols; ++col_i){
-		// 		retVec.at<double>(0, retMatCol) = tempVecs.at(vecs_i).at<double>(0, col_i);
-		// 		retMatCol++;
-		// 	}
-		// }
-		// return retVec;
+		return mergeRVec(rvecs).m();
 	}
 
 	RVec MatU::mergeRVec(const vector<RVec> &vecs){
@@ -181,7 +161,6 @@ namespace mc{
 		}
 
 		return retMat;
-
 	}
 
 	// mat1の右側にmat2を連結する

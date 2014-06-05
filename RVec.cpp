@@ -8,8 +8,9 @@ namespace mc{
 		return true;
 	}
 
-	RVec::RVec(const unsigned int size){
-		mat_ = cv::Mat(0, size, CV_64F);
+	RVec::RVec(const unsigned int size) : mat_(cv::Mat(1, size, CV_64F)){
+		if(!isValid())	throw invalid_argument("mat is not vector!");
+		// mat_ = cv::Mat(0, size, CV_64F);
 	}
 
 	RVec::RVec(const cv::Mat& mat) : mat_(mat){

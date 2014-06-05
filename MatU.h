@@ -23,6 +23,7 @@ namespace mc{
 		static vector< vector<string> > toVec(const cv::Mat& mat);
 		static vector< vector< vector<string> > > toVec(const vector<cv::Mat>& mats);
 		static cv::Mat toMat(const vector<string>& content);
+		static RVec toRVec(const vector<string>& content);
 		static cv::Mat toMat(const vector< vector<string> >& contents);
 
 		//srcの指定した行からdstの指定した行へをコピーする

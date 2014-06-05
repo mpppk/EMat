@@ -152,6 +152,25 @@ TEST_F(MatUTest, copyColTest){
 	EXPECT_EQ(11, mat2.at<double>(0, 1));
 }
 
+TEST_F(MatUTest, mergeRVecTest){
+	cv::Mat mat = (cv::Mat_<double>(1,3) << 1, 2, 3);
+	cv::Mat mat2 = (cv::Mat_<double>(1,3) << 4, 5, 6);
+	cv::Mat mat3 = mc::MatU::mergeRVec(mat, mat2);
+	EXPECT_EQ(6, mat3.at<double>(0, 5));
+
+	vector<cv::Mat> mats;
+	mats.push_back(mat);
+	mats.push_back(mat2);
+	mat3 = mc::MatU::mergeRVec(mats);
+	EXPECT_EQ(6, mat3.at<double>(0, 5));
+
+	cv::Mat mat4(2, 3, CV_64F);
+	for(int i = 0; i < mat.cols; i++)	mat4.at<double>(0, i) = mat.at<double>(0, i);
+	for(int i = 0; i < mat2.cols; i++)	mat4.at<double>(1, i) = mat2.at<double>(0, i);
+	mc::RVec rvec = mc::MatU::mergeRVec(mat4);
+	EXPECT_EQ(6, rvec[5]);
+}
+
 TEST_F(MatUTest, mergeMatToSideTest){
 	cv::Mat mat1 = getTempMat();
 	cv::Mat mat2 = getTempMat(10, 2, 4);
