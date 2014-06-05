@@ -8,12 +8,6 @@
 using namespace std;
 
 namespace mc{
-
-	/**
-	 * @class EMat a b cv::Matを継承し、機能を拡張したクラス
-	 */
-
-	// cv::Matを拡張したクラス(Extended Mat)
 	class MatU{
 	public:
 		/**

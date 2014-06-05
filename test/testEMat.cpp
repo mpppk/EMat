@@ -3,6 +3,35 @@
 
 using namespace std;
 
+vector< vector<string> > getData(){
+	vector< vector<string> > retVec;
+	retVec.push_back(vector<string>{"1","9"});
+	retVec.push_back(vector<string>{"2","8"});
+	retVec.push_back(vector<string>{"3","7"});
+	retVec.push_back(vector<string>{"4","6"});
+	retVec.push_back(vector<string>{"5","5"});
+	retVec.push_back(vector<string>{"6","4"});
+	retVec.push_back(vector<string>{"7","3"});
+	retVec.push_back(vector<string>{"8","2"});
+	retVec.push_back(vector<string>{"9","1"});
+	return retVec;
+}
+
+vector< vector<string> > getWeight(){
+	vector< vector<string> > retVec;
+	vector<string> v{"1"};
+	retVec.push_back(v);
+	retVec.push_back(v);
+	retVec.push_back(v);
+	retVec.push_back(v);
+	retVec.push_back(v);
+	retVec.push_back(v);
+	retVec.push_back(v);
+	retVec.push_back(v);
+	retVec.push_back(v);
+	return retVec;
+}
+
 inline int toInt(std::string s) {int v; std::istringstream sin(s);sin>>v;return v;}
 template<class T> inline std::string toString(T x) {std::ostringstream sout;sout<<x;return sout.str();}
 
@@ -255,6 +284,47 @@ TEST_F(MatUTest, mergeMatToBottomTest){
 	EXPECT_EQ(17, mat3.at<double>(4, 3));
 	EXPECT_EQ(18, mat3.at<double>(5, 0));
 	EXPECT_EQ(-99, mat3.at<double>(5, 1));
+}
+
+class MathUTest : public ::testing::Test{
+protected:
+	string fileDirPass;
+
+	virtual void SetUp(){
+		// ファイルの書きだし先
+		fileDirPass = "../test/TestMathFuncs/";
+	}
+};
+
+// calcWCovMatが正しく動作しているかのテスト
+TEST(MathUTest, calcWCovTest){
+	mc::EMat data(getData());
+	mc::EMat weight(getWeight());
+	// data.createByVec(getData());
+	// weight.createByVec(getWeight());
+
+	bitset<mc::MathU::CovMatOptionsNum> flags;
+
+	// 最後に重みで割らない場合
+	mc::EMat covarMat = mc::MathU::calcWCovMat(data.m(), weight.m().t(), flags);
+	EXPECT_EQ(60, covarMat(0, 0));
+	EXPECT_EQ(-60, covarMat(1, 0));
+	EXPECT_EQ(60, covarMat(1, 1));
+
+	// 最後に重みで割る場合
+	flags.set(mc::MathU::SCALE);
+	covarMat = mc::MathU::calcWCovMat(data.m(), weight.m().t(), flags);
+	EXPECT_DOUBLE_EQ(60/9.0, covarMat(0, 0));
+	EXPECT_DOUBLE_EQ(-60/9.0, covarMat(1, 0));
+	EXPECT_DOUBLE_EQ(60/9.0, covarMat(1, 1));
+}
+
+// calcWCovMatが正しく動作しているかのテスト
+TEST(MathUTest, calcEuclideanDistTest){
+	cv::Mat point1 = (cv::Mat_<double>(1,3) << 1, 2, 3);
+	cv::Mat point2 = (cv::Mat_<double>(1,3) << 3, 4, 4);
+	double dist = mc::MathU::calcEuclideanDist(point1, point2);
+	EXPECT_DOUBLE_EQ(dist, 3);
 }
 
 int main( int argc, char* argv[] ){

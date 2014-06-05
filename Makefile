@@ -1,6 +1,6 @@
 # EMatのためのMakefile
 CXX  = g++
-SRCS  = MatU.cpp RVec.cpp EMat.cpp
+SRCS  = MathU.cpp MatU.cpp RVec.cpp EMat.cpp
 # OBJS = EMat.o
 OBJS = $(SRCS:%.cpp=%.o)
 DEPS = $(SRCS:%.cpp=%.d)

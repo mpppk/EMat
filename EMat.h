@@ -8,6 +8,7 @@
 #include <map>
 #include <opencv2/opencv.hpp>
 #include <MatU.h>
+#include <MathU.h>
 
 using namespace std;
 
