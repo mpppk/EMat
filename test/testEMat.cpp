@@ -65,7 +65,7 @@ TEST_F(EMatTest, toVecTest){
 	emats.push_back(emat2);
 	emats.push_back(emat3);
 
-	vector< vector< vector<string> > > ematsVec = mc::EMat::toVec(mc::EMat::cast(emats));
+	vector< vector< vector<string> > > ematsVec = mc::MatU::toVec(mc::EMat::cast(emats));
 	EXPECT_EQ(1, toInt(ematsVec[0][0][0]));
 	EXPECT_EQ(10, toInt(ematsVec[1][0][0]));
 	EXPECT_EQ(28, toInt(ematsVec[2][2][2]));
@@ -87,6 +87,155 @@ TEST_F(EMatTest, RVecTest){
 	EXPECT_EQ(3, rvec[2]);
 	rvec[0] = 4;
 	EXPECT_EQ(4, rvec[0]);
+}
+
+class MatUTest : public ::testing::Test{
+	protected:
+		string fileDirPass;
+
+		virtual void SetUp(){
+			// ファイルの書きだし先
+			fileDirPass = "../test/TestEMat/";
+		}
+};
+
+TEST_F(MatUTest, toVecTest){
+	// vector< vector<string> > toVec(const cv::Mat&)
+	auto vec = mc::MatU::toVec( getTempMat() );
+	EXPECT_EQ( 1, toInt(vec[0][0]) );
+	EXPECT_EQ( 5, toInt(vec[1][1]) );
+
+	// vector< vector< vector<string> > > MatU::toVec(const vector<cv::Mat>& mats){
+	vector<cv::Mat> mats;
+	mats.push_back(getTempMat());
+	mats.push_back(getTempMat(10));
+	mats.push_back(getTempMat(20));
+	auto vec2 = mc::MatU::toVec(mats);
+	EXPECT_EQ( 20, toInt(vec2[2][0][0]) );
+}
+
+TEST_F(MatUTest, toMatTest){
+	// cv::Mat toMat(const vector<string>& content);
+	cv::Mat mat = mc::MatU::toMat(vector<string>{"1", "2", "3"});
+	EXPECT_EQ( 3, mat.at<double>(0, 2) );
+
+	// cv::Mat toMat(const vector< vector<string> >& contents);
+	cv::Mat mat2 = mc::MatU::toMat(getTempVec());
+	EXPECT_EQ( 3, mat.at<double>(0, 2) );
+}
+
+TEST_F(MatUTest, copyRowTest){
+	cv::Mat mat1 = getTempMat();
+	cv::Mat mat2 = getTempMat(10);
+	mc::MatU::copyRow(mat1, mat2, 0, 0);
+	// expected mat
+	//   1  2  3
+	//  13 14 15
+	//  16 17 18 
+
+	EXPECT_EQ( 1, mat2.at<double>(0, 0));
+	EXPECT_EQ( 3, mat2.at<double>(0, 2));
+	EXPECT_EQ(16, mat2.at<double>(2, 0));
+}
+
+TEST_F(MatUTest, copyColTest){
+	cv::Mat mat1 = getTempMat();
+	cv::Mat mat2 = getTempMat(10);
+	mc::MatU::copyCol(mat1, mat2, 0, 0);
+	// expected mat
+	//  1 11 12
+	//  4 14 15
+	//  7 17 18 
+
+	EXPECT_EQ( 1, mat2.at<double>(0, 0));
+	EXPECT_EQ( 7, mat2.at<double>(2, 0));
+	EXPECT_EQ(11, mat2.at<double>(0, 1));
+}
+
+TEST_F(MatUTest, mergeMatToSideTest){
+	cv::Mat mat1 = getTempMat();
+	cv::Mat mat2 = getTempMat(10, 2, 4);
+
+	cv::Mat mat3 = mc::MatU::mergeMatToSide(mat1, mat2, -99);
+	// expected mat
+	// 1   2   3  10  11  12  13
+	// 4   5   6  14  15  16  17
+	// 7   8   9 -99 -99 -99 -99
+
+	EXPECT_EQ(3, mat3.rows);
+	EXPECT_EQ(7, mat3.cols);
+	EXPECT_EQ(9, mat3.at<double>(2, 2));
+	EXPECT_EQ(10, mat3.at<double>(0, 3));
+	EXPECT_EQ(17, mat3.at<double>(1, 6));
+	EXPECT_EQ(-99, mat3.at<double>(2, 6));
+
+	mat3 = mc::MatU::mergeMatToSide(mat2, mat1, -99);
+	// expected mat
+	//  10  11  12  13  1   2   3
+	//  14  15  16  17  4   5   6
+	// -99 -99 -99 -99  7   8   9
+
+	EXPECT_EQ(3, mat3.rows);
+	EXPECT_EQ(7, mat3.cols);
+	EXPECT_EQ(10, mat3.at<double>(0, 0));
+	EXPECT_EQ(3, mat3.at<double>(0, 6));
+	EXPECT_EQ(7, mat3.at<double>(2, 4));
+}
+
+TEST_F(MatUTest, mergeMatToBottomTest){
+	cv::Mat mat1 = getTempMat();
+	cv::Mat mat2 = getTempMat(10, 2, 4);
+
+	cv::Mat mat3 = mc::MatU::mergeMatToBottom(mat1, mat2, -99);
+	// expected mat
+	//    1   2   3 -99 
+	//    4   5   6 -99
+	//    7   8   9 -99
+	//   10  11  12  13
+	//   14  15  16  17
+
+	EXPECT_EQ(5, mat3.rows);
+	EXPECT_EQ(4, mat3.cols);
+	EXPECT_EQ(-99, mat3.at<double>(0, 3));
+	EXPECT_EQ(10, mat3.at<double>(3, 0));
+	EXPECT_EQ(17, mat3.at<double>(4, 3));
+
+	mat3 = mc::MatU::mergeMatToBottom(mat2, mat1, -99);
+	// expected mat
+	//   10  11  12  13
+	//   14  15  16  17
+	//    1   2   3 -99 
+	//    4   5   6 -99
+	//    7   8   9 -99
+
+	EXPECT_EQ(5, mat3.rows);
+	EXPECT_EQ(4, mat3.cols);
+	EXPECT_EQ(-99, mat3.at<double>(2, 3));
+	EXPECT_EQ(1, mat3.at<double>(2, 0));
+	EXPECT_EQ(17, mat3.at<double>(1, 3));
+
+	vector<cv::Mat> mats;
+	mats.push_back(getTempMat());
+	mats.push_back(getTempMat(10, 2, 4));
+	mats.push_back(getTempMat(18, 3, 1));
+
+	mat3 = mc::MatU::mergeMatToBottom(mats, -99);
+	// expected mat
+	//   1   2   3 -99
+	//   4   5   6 -99
+	//   7   8   9 -99
+	//  10  11  12  13
+	//  14  15  16  17
+	//  18 -99 -99 -99
+	//  19 -99 -99 -99
+	//  20 -99 -99 -99
+
+	EXPECT_EQ(8, mat3.rows);
+	EXPECT_EQ(4, mat3.cols);
+	EXPECT_EQ(-99, mat3.at<double>(2, 3));
+	EXPECT_EQ(17, mat3.at<double>(4, 3));
+	EXPECT_EQ(18, mat3.at<double>(5, 0));
+	EXPECT_EQ(-99, mat3.at<double>(5, 1));
 }
 
 int main( int argc, char* argv[] ){

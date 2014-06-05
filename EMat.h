@@ -7,9 +7,7 @@
 #include <vector>
 #include <map>
 #include <opencv2/opencv.hpp>
-#include <boost/lexical_cast.hpp>
-
-#include <RVec.h>
+#include <MatU.h>
 
 using namespace std;
 
@@ -66,20 +64,8 @@ namespace mc{
 		cv::Mat& m();
 		const cv::Mat& m() const;
 
-		// ---------- cast系 ----------
-		static vector<cv::Mat> cast(const vector<EMat>& emats);
-		// ---------- ここまでcast系 ----------
-
-		// ---------- to系 ----------
-		static cv::Mat toMat(const vector< vector<string> >& contents);
-		/**
-		 * 要素をstring型にしてvectorを返す
-		 * @return EMatが保持している要素
-		 */
 		vector< vector<string> > toVec() const;
-		static vector< vector<string> > toVec(const cv::Mat& mat);
-		static vector< vector< vector<string> > > toVec(const vector<cv::Mat>& mats);
-		// ---------- ここまでto系 ----------
+		static vector<cv::Mat> cast(const vector<EMat>& emats);
 
 	};
 }

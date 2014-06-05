@@ -1,4 +1,4 @@
-#include "RVec.h"
+#include <RVec.h>
 
 using namespace std;
 
@@ -8,9 +8,12 @@ namespace mc{
 		return true;
 	}
 
+	RVec::RVec(const unsigned int size){
+		mat_ = cv::Mat(0, size, CV_64F);
+	}
+
 	RVec::RVec(const cv::Mat& mat) : mat_(mat){
 		if(!isValid())	throw invalid_argument("mat is not vector!");
-		mat_ = mat;
 	}
 
 	RVec::RVec(const vector<string>& content) : mat_(toMat(content)){
@@ -26,8 +29,23 @@ namespace mc{
 	double& RVec::operator[](unsigned int index){
 		return mat_.at<double>(0, index);
 	}
+	
+	double RVec::operator[](unsigned int index) const{
+		return mat_.at<double>(0, index);
+	}
+
+	int RVec::size() const{ return mat_.cols; }
 
 	cv::Mat& RVec::m(){return mat_;}
+	const cv::Mat& RVec::m() const{return mat_;}
+
+	vector<RVec> RVec::cast(vector<cv::Mat> mats){
+		vector<RVec> vecs;
+		for(cv::Mat mat : mats){
+			vecs.push_back( RVec(mat) );
+		}
+		return vecs;
+	}
 
 	cv::Mat RVec::toMat(const vector<string>& content){
 		cv::Mat mat(1, content.size(), CV_64F);
@@ -36,5 +54,5 @@ namespace mc{
 		}
 		return mat;
 	}
-
 }
+

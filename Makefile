@@ -1,6 +1,6 @@
 # EMatのためのMakefile
 CXX  = g++
-SRCS  = RVec.cpp EMat.cpp
+SRCS  = MatU.cpp RVec.cpp EMat.cpp
 # OBJS = EMat.o
 OBJS = $(SRCS:%.cpp=%.o)
 DEPS = $(SRCS:%.cpp=%.d)
@@ -39,7 +39,7 @@ clean:;         rm -f *.o *~ test/*.o test/*.test
 	$(CXX) -c -MMD $(FLAGS) $< $(OPENCVINC) $(INCLUDE_PASS)
 
 $(TEST_OBJS):	$(TEST_SRCS)
-	$(CXX) -c -o $@ $^ $(GTEST_INCPASS) $(INCLUDE_PASS)
+	$(CXX)  $(FLAGS) -c -o $@ $^ $(GTEST_INCPASS) $(INCLUDE_PASS)
 
 test:		$(TEST_OBJS) $(OBJS)
 	$(CXX) $(FLAGS) $(TEST_OBJS) $(OBJS) -o $(TEST_PROGRAM) $(GTEST_LIBPASS) $(GTEST_LIBS) $(OPENCVLIB)
