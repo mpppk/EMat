@@ -37,6 +37,24 @@ namespace mc{
 		return retMat;
 	}
 
+	EMat EMat::toNormalizedMat() const{
+		return MathU::normalize(mat_)["normalizedMat"];
+	}
+
+	EMat EMat::toUnnormalizedMat(const RVec &mean, const RVec &sd) const{
+		return MathU::unnormalize(mat_, mean, sd)["unnormalizedMat"];
+	}
+
+	EMat EMat::toCovMat() const{
+		cv::Mat covMat, mean;
+		calcCovarMatrix(mat_, covMat, mean, CV_COVAR_NORMAL | CV_COVAR_ROWS | CV_COVAR_SCALE);
+		return covMat;
+	}
+
+	EMat EMat::toWCovMat(const RVec &weight, const bitset<MathU::CovMatOptionsNum> flags) const{
+		return MathU::calcWCovMat(mat_, weight, flags);
+	}
+
 	// 要素がstringのvectorを返す
 	vector< vector<string> > EMat::toVec() const{
 		return MatU::toVec(mat_);

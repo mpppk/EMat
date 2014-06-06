@@ -65,6 +65,11 @@ namespace mc{
 		cv::Mat& m();
 		const cv::Mat& m() const;
 
+		EMat toNormalizedMat() const;
+		EMat toUnnormalizedMat(const RVec &mean, const RVec &sd) const;
+		EMat toCovMat() const;
+		EMat toWCovMat(const RVec &weight, const bitset<MathU::CovMatOptionsNum> flags) const;
+
 		vector< vector<string> > toVec() const;
 		static vector<cv::Mat> cast(const vector<EMat>& emats);
 
