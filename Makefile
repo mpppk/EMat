@@ -31,7 +31,10 @@ TEST_SRCS = $(TEST_DIR)/testEMat.cpp
 TEST_OBJS    = $(TEST_SRCS:%.cpp=%.o)
 TEST_PROGRAM = $(TEST_DIR)/testEMatIO.test
 
-all:            $(OBJS)
+all:            lib
+
+lib:	$(OBJS)
+	ar rv libEMat.a MathU.o MatU.o RVec.o EMat.o
 
 clean:;         rm -f *.o *~ test/*.o test/*.test *.d
 
