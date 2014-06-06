@@ -17,6 +17,10 @@ namespace mc{
 		if(!isValid())	throw invalid_argument("mat is not vector!");
 	}
 
+	RVec::RVec(const cv::MatExpr& mate) : mat_(mate){
+		if(!isValid())	throw invalid_argument("mat is not vector!");
+	}
+
 	RVec::RVec(const vector<string>& content) : mat_(toMat(content)){
 		if(!isValid())	throw invalid_argument("mat is not vector!");
 	}
@@ -33,6 +37,46 @@ namespace mc{
 	
 	double RVec::operator[](unsigned int index) const{
 		return mat_.at<double>(0, index);
+	}
+
+	RVec& RVec::operator+(double n){
+		mat_ += n;
+		return *this;
+	}
+
+	RVec& RVec::operator+=(double n){
+		mat_ += n;
+		return *this;
+	}
+
+	RVec& RVec::operator-(double n){
+		mat_ -= n;
+		return *this;
+	}
+
+	RVec& RVec::operator-=(double n){
+		mat_ -= n;
+		return *this;
+	}
+
+	RVec& RVec::operator/(double n){
+		mat_ /= n;
+		return *this;
+	}
+
+	RVec& RVec::operator/=(double n){
+		mat_ /= n;
+		return *this;
+	}
+
+	RVec& RVec::operator*(double n){
+		mat_ *= n;
+		return *this;
+	}
+
+	RVec& RVec::operator*=(double n){
+		mat_ *= n;
+		return *this;
 	}
 
 	int RVec::size() const{ return mat_.cols; }
