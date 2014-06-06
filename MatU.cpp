@@ -188,7 +188,7 @@ namespace mc{
 		return mergedMat;
 	}
 
-	cv::Mat MatU::mergeMatToBottom(const vector<cv::Mat> mats, int fillBlankNum){
+	cv::Mat MatU::mergeMatToBottom(const vector<cv::Mat> &mats, int fillBlankNum){
 		cv::Mat mergedMat;
 		if(mats.size() == 1){
 			cout << "warning:" << endl << "mats's element number is only one! in mc::mergeMatToBottom" << endl;

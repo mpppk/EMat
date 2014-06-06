@@ -49,7 +49,7 @@ namespace mc{
 		// vec1 -> カーネル関数の引数
 		// vec2 -> カーネル関数の引数
 		// rbfSigma -> rbfカーネルの計算に用いるσの値
-		// 
+
 		static cv::Mat plotEllipse(double x,double y,double a,double b,int rot);
 
 		static cv::Mat plotConfidenceEllipse(const cv::Mat &mean, const cv::Mat &covMat, const int sigma);
@@ -65,8 +65,8 @@ namespace mc{
 
 		static cv::Mat normalizeHistogram(const cv::Mat &src);
 
-		static double calcEuclideanDist(const cv::Mat point1, const cv::Mat point2);
-		static double calcEuclideanDist(const RVec point1, const RVec point2);
+		static double calcEuclideanDist(const cv::Mat &point1, const cv::Mat &point2);
+		static double calcEuclideanDist(const RVec &point1, const RVec &point2);
 	};
 }
 

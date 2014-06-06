@@ -290,10 +290,11 @@ namespace mc{
 		return dst;
 	}
 
-	double MathU::calcEuclideanDist(const cv::Mat point1, const cv::Mat point2){
+	double MathU::calcEuclideanDist(const cv::Mat &point1, const cv::Mat &point2){
 		return calcEuclideanDist(RVec(point1), RVec(point2));
 	}
-	double MathU::calcEuclideanDist(const RVec point1, const RVec point2){
+
+	double MathU::calcEuclideanDist(const RVec &point1, const RVec &point2){
 		// ベクトルの行数が違う場合は例外
 		if(point1.size() != point2.size()){
 			throw invalid_argument("in calcEuclideanDist invalid value is passed. vector nums are different.");

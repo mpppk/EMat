@@ -47,6 +47,6 @@ namespace mc{
 
 		static cv::Mat mergeMatToBottom(const cv::Mat &mat1, const cv::Mat &mat2, const int fillBlankNum = 0);
 
-		static cv::Mat mergeMatToBottom(const vector<cv::Mat> mats, const int fillBlankNum = 0);
+		static cv::Mat mergeMatToBottom(const vector<cv::Mat> &mats, const int fillBlankNum = 0);
 	};
 }
