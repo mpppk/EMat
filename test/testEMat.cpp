@@ -116,6 +116,7 @@ TEST_F(EMatTest, RVecTest){
 	EXPECT_EQ(3, rvec[2]);
 	rvec[0] = 4;
 	EXPECT_EQ(4, rvec[0]);
+	// cout << rvec << endl;
 }
 
 class MatUTest : public ::testing::Test{
@@ -296,6 +297,20 @@ protected:
 	}
 };
 
+TEST(MathUTest, normTest){
+	cv::Mat mat = (cv::Mat_<double>(1,3) << 1, -2, 3);
+	double l1norm = mc::MathU::calcL1norm(mat);
+	EXPECT_EQ(6, l1norm);
+	
+	cv::Mat mat2 = (cv::Mat_<double>(1,4) << 2, -2, 2, -2);
+	double l2norm = mc::MathU::calcL2norm(mat2);
+	EXPECT_EQ(4, l2norm);
+
+	cv::Mat mat3 = (cv::Mat_<double>(1,3) << 1, -2, 3);
+	double sum = mc::MathU::calcTotalSum(mat3);
+	EXPECT_EQ(2, sum);
+}
+
 // calcWCovMatが正しく動作しているかのテスト
 TEST(MathUTest, calcWCovTest){
 	mc::EMat data(getData());
@@ -306,14 +321,14 @@ TEST(MathUTest, calcWCovTest){
 	bitset<mc::MathU::CovMatOptionsNum> flags;
 
 	// 最後に重みで割らない場合
-	mc::EMat covarMat = mc::MathU::calcWCovMat(data.m(), weight.m().t(), flags);
+	mc::EMat covarMat = mc::MathU::calcWCovMat(data.m(), mc::RVec(weight.m().t()), flags);
 	EXPECT_EQ(60, covarMat(0, 0));
 	EXPECT_EQ(-60, covarMat(1, 0));
 	EXPECT_EQ(60, covarMat(1, 1));
 
 	// 最後に重みで割る場合
 	flags.set(mc::MathU::SCALE);
-	covarMat = mc::MathU::calcWCovMat(data.m(), weight.m().t(), flags);
+	covarMat = mc::MathU::calcWCovMat(data.m(), mc::RVec(weight.m().t()), flags);
 	EXPECT_DOUBLE_EQ(60/9.0, covarMat(0, 0));
 	EXPECT_DOUBLE_EQ(-60/9.0, covarMat(1, 0));
 	EXPECT_DOUBLE_EQ(60/9.0, covarMat(1, 1));

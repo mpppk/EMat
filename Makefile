@@ -33,7 +33,7 @@ TEST_PROGRAM = $(TEST_DIR)/testEMatIO.test
 
 all:            $(OBJS)
 
-clean:;         rm -f *.o *~ test/*.o test/*.test
+clean:;         rm -f *.o *~ test/*.o test/*.test *.d
 
 .cpp.o:
 	$(CXX) -c -MMD $(FLAGS) $< $(OPENCVINC) $(INCLUDE_PASS)

@@ -2,11 +2,11 @@
 // cv::Matを拡張するクラス
 
 #pragma once
-#include <string>
-#include <iostream>
-#include <vector>
-#include <map>
-#include <opencv2/opencv.hpp>
+// #include <string>
+// #include <iostream>
+// #include <vector>
+// #include <map>
+// #include <opencv2/opencv.hpp>
 #include <MatU.h>
 #include <MathU.h>
 
