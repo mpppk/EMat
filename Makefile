@@ -36,7 +36,7 @@ all:            lib
 lib:	$(OBJS)
 	ar rv libEMat.a MathU.o MatU.o RVec.o EMat.o
 
-clean:;         rm -f *.o *~ test/*.o test/*.test *.d
+clean:;         rm -f *.o *~ test/*.o test/*.test *.d *.a
 
 .cpp.o:
 	$(CXX) -c -MMD $(FLAGS) $< $(OPENCVINC) $(INCLUDE_PASS)
