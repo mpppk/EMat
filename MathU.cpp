@@ -191,11 +191,58 @@ namespace mc{
 		// TODO: degreeがこれでいいのか考える
 	}
 
-	map<string, cv::Mat> MathU::normalize(const cv::Mat &data, const cv::Mat &mean, const cv::Mat &sd){
+	RVec MathU::toEachColsMean(const cv::Mat &data){
+		RVec sum = cv::Mat::zeros(1, data.cols, CV_64F);
+		// 各要素の合計とその二乗を計算
+		for (int row_i = 0; row_i < data.rows; ++row_i){
+			for (int col_i = 0; col_i < data.cols; ++col_i){
+				sum[col_i] += data.at<double>(row_i, col_i);
+			}
+		}
+		return sum / data.rows;
+	}
+
+	RVec MathU::toEachColsSquareMean(const cv::Mat &data){
+		RVec squareSum = cv::Mat::zeros(1, data.cols, CV_64F);
+		// 各要素の合計とその二乗を計算
+		for (int row_i = 0; row_i < data.rows; ++row_i){
+			for (int col_i = 0; col_i < data.cols; ++col_i){
+				squareSum[col_i] += pow(data.at<double>(row_i, col_i), 2);
+			}
+		}
+		return squareSum / data.rows;
+	}
+
+	RVec MathU::toEachColsSD(const cv::Mat &data){
+		RVec mean = toEachColsMean(data);
+		RVec squareMean = toEachColsSquareMean(data);
+		return toEachColsSD(data, mean, squareMean);
+	}
+
+	RVec MathU::toEachColsSD(const cv::Mat &data, const RVec &mean){
+		RVec squareMean = toEachColsSquareMean(data);
+		return toEachColsSD(data, mean, squareMean);
+	}
+
+	RVec MathU::toEachColsSD(const cv::Mat &data, const RVec &mean, const RVec &squareMean){
+		RVec sd(data.cols);
+		for(int i = 0; i < data.cols; i++)	sd[i] = sqrt( squareMean[i] - pow(mean[i], 2) );
+		return sd;
+	}
+
+	RVec MathU::toEachColsVariance(const RVec sd){
+		RVec variance(sd.size());
+		for(int i = 0; i < sd.size(); i++){
+			variance[i] = sqrt(sd[i]);
+		}
+		return variance;
+	}
+
+	cv::Mat MathU::normalize(const cv::Mat &data, const cv::Mat &mean, const cv::Mat &sd){
 		return normalize(data, RVec(mean), RVec(sd));
 	}
 
-	map<string, cv::Mat> MathU::normalize(const cv::Mat &data, const RVec &mean, const RVec &sd){
+	cv::Mat MathU::normalize(const cv::Mat &data, const RVec &mean, const RVec &sd){
 		// 行列を正規化
 		cv::Mat normalizedMat = data.clone();
 
@@ -205,63 +252,28 @@ namespace mc{
 				normalizedMat.at<double>(row_i, col_i) /= sd[col_i];
 			}
 		}
-
-		// 返り値
-		map<string, cv::Mat> retMats;
-		retMats.insert( map<string, cv::Mat>::value_type( "mean", mean.m() ) );
-		retMats.insert( map<string, cv::Mat>::value_type( "sd", sd.m() ) );
-		retMats.insert( map<string, cv::Mat>::value_type( "normalizedMat", normalizedMat ) );
-		return retMats;
+		return normalizedMat;
 	}
 
 	map<string, cv::Mat> MathU::normalize(const cv::Mat &data){
-		RVec mean(data.cols);
-		RVec squareMean(data.cols);
-		RVec sum = cv::Mat::zeros(1, data.cols, CV_64F);
-		RVec squareSum = cv::Mat::zeros(1, data.cols, CV_64F);
-		RVec variance(data.cols);
-		RVec sd(data.cols);
-		cv::Mat normalizedMat = data.clone();
-
-		// 各要素の合計とその二乗を計算
-		for (int row_i = 0; row_i < data.rows; ++row_i){
-			for (int col_i = 0; col_i < data.cols; ++col_i){
-				sum[col_i] += data.at<double>(row_i, col_i);
-				squareSum[col_i] += pow(data.at<double>(row_i, col_i), 2);
-			}
-		}
-
-		// 平均と標準偏差の計算
-		// 分散 = ２乗の平均　－　平均の２乗
-		for (int col_i = 0; col_i < data.cols; ++col_i){
-			mean[col_i] = sum[col_i] / data.rows;
-			squareMean[col_i] = squareSum[col_i] / data.rows;
-			variance[col_i] = squareMean[col_i] - pow(mean[col_i], 2);
-			sd[col_i] = sqrt(variance[col_i]);
-		}
-
-		// 行列を正規化
-		for (int row_i = 0; row_i < data.rows; ++row_i){
-			for (int col_i = 0; col_i < data.cols; ++col_i){
-				normalizedMat.at<double>(row_i, col_i) -= mean[col_i];
-				normalizedMat.at<double>(row_i, col_i) /= sd[col_i];				
-			}
-		}
+		RVec mean = toEachColsMean(data);
+		RVec sd = toEachColsSD(data, mean);
+		RVec variance = toEachColsVariance(sd);
 
 		// 返り値
 		map<string, cv::Mat> retMats;
 		retMats.insert( map<string, cv::Mat>::value_type( "mean", mean.m() ) );
 		retMats.insert( map<string, cv::Mat>::value_type( "variance", variance.m() ) );
 		retMats.insert( map<string, cv::Mat>::value_type( "sd", sd.m() ) );
-		retMats.insert( map<string, cv::Mat>::value_type( "normalizedMat", normalizedMat ) );
+		retMats.insert( map<string, cv::Mat>::value_type( "normalizedMat", normalize(data, mean, sd) ) );
 		return retMats;
 	}
 
-	map<string, cv::Mat> MathU::unnormalize(const cv::Mat &data, const cv::Mat &mean, const cv::Mat &sd){
+	cv::Mat MathU::unnormalize(const cv::Mat &data, const cv::Mat &mean, const cv::Mat &sd){
 		return unnormalize(data, RVec(mean), RVec(sd));
 	}
 
-	map<string, cv::Mat> MathU::unnormalize(const cv::Mat &data, const RVec &mean, const RVec &sd){
+	cv::Mat MathU::unnormalize(const cv::Mat &data, const RVec &mean, const RVec &sd){
 		cv::Mat unnormalizedMat = data.clone();
 
 		for (int row_i = 0; row_i < data.rows; ++row_i){
@@ -270,13 +282,7 @@ namespace mc{
 				unnormalizedMat.at<double>(row_i, col_i) += mean[col_i];				
 			}
 		}
-
-		// 返り値
-		map<string, cv::Mat> retMats;
-		retMats.insert( map<string, cv::Mat>::value_type( "mean", mean.m() ) );
-		retMats.insert( map<string, cv::Mat>::value_type( "sd", sd.m() ) );
-		retMats.insert( map<string, cv::Mat>::value_type( "unnormalizedMat", unnormalizedMat ) );
-		return retMats;
+		return unnormalizedMat;
 	}
 
 	cv::Mat MathU::normalizeHistogram(const cv::Mat &src){

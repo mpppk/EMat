@@ -42,8 +42,21 @@ namespace mc{
 	}
 
 	EMat EMat::toUnnormalizedMat(const RVec &mean, const RVec &sd) const{
-		return MathU::unnormalize(mat_, mean, sd)["unnormalizedMat"];
+		return MathU::unnormalize(mat_, mean, sd);
 	}
+
+	RVec EMat::toEachColsMean() const{
+		return MathU::toEachColsMean(mat_);
+	}
+
+	RVec EMat::toEachColsSD(const RVec &mean) const{
+		return MathU::toEachColsSD(mat_, mean);
+	}
+
+	RVec EMat::toEachColsSD() const{
+		return MathU::toEachColsSD(mat_);
+	}
+
 
 	EMat EMat::toCovMat() const{
 		cv::Mat covMat, mean;

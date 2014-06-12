@@ -109,6 +109,15 @@ TEST_F(EMatTest, castTest){
 	EXPECT_EQ(20, mats[2].at<double>(0, 0));
 }
 
+TEST_F(EMatTest, normalizeTest){
+	mc::EMat emat(getData());
+	mc::EMat emat2 = emat.toNormalizedMat();
+	mc::EMat emat3 = emat2.toUnnormalizedMat(emat.toEachColsMean(), emat.toEachColsSD());
+	EXPECT_EQ(1, emat3.m().at<double>(0, 0));
+	EXPECT_EQ(5, emat3.m().at<double>(4, 0));
+	EXPECT_EQ(9, emat3.m().at<double>(0, 1));
+}
+
 TEST_F(EMatTest, RVecTest){
 	ASSERT_THROW( mc::RVec rvec(getTempMat() ), invalid_argument );
 	cv::Mat mat = ( cv::Mat_<double>(1, 3) << 1,2,3 );

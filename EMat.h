@@ -65,6 +65,9 @@ namespace mc{
 		cv::Mat& m();
 		const cv::Mat& m() const;
 
+		RVec toEachColsMean() const;
+		RVec toEachColsSD(const RVec &mean) const;
+		RVec toEachColsSD() const;
 		EMat toNormalizedMat() const;
 		EMat toUnnormalizedMat(const RVec &mean, const RVec &sd) const;
 		EMat toCovMat() const;

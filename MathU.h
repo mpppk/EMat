@@ -55,13 +55,20 @@ namespace mc{
 		static cv::Mat plotConfidenceEllipse(const cv::Mat &mean, const cv::Mat &covMat, const int sigma);
 		static cv::Mat plotConfidenceEllipse(const RVec &mean, const cv::Mat &covMat, const int sigma);
 
-		static map<string, cv::Mat> normalize(const cv::Mat &data, const cv::Mat &mean, const cv::Mat &sd);
-		static map<string, cv::Mat> normalize(const cv::Mat &data, const RVec &mean, const RVec &sd);
+		static RVec toEachColsMean(const cv::Mat &data);
+		static RVec toEachColsSquareMean(const cv::Mat &data);
+		static RVec toEachColsSD(const cv::Mat &data);
+		static RVec toEachColsSD(const cv::Mat &data, const RVec &mean);
+		static RVec toEachColsSD(const cv::Mat &data, const RVec &mean, const RVec &squareMean);
+		static RVec toEachColsVariance(const RVec sd);
+
+		static cv::Mat normalize(const cv::Mat &data, const cv::Mat &mean, const cv::Mat &sd);
+		static cv::Mat normalize(const cv::Mat &data, const RVec &mean, const RVec &sd);
 
 		static map<string, cv::Mat> normalize(const cv::Mat &data);
 
-		static map<string, cv::Mat> unnormalize(const cv::Mat &data, const cv::Mat &mean, const cv::Mat &sd);
-		static map<string, cv::Mat> unnormalize(const cv::Mat &data, const RVec &mean, const RVec &sd);
+		static cv::Mat unnormalize(const cv::Mat &data, const cv::Mat &mean, const cv::Mat &sd);
+		static cv::Mat unnormalize(const cv::Mat &data, const RVec &mean, const RVec &sd);
 
 		static cv::Mat normalizeHistogram(const cv::Mat &src);
 
