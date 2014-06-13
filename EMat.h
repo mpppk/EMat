@@ -69,6 +69,7 @@ namespace mc{
 		RVec toEachColsSD(const RVec &mean) const;
 		RVec toEachColsSD() const;
 		EMat toNormalizedMat() const;
+		EMat toNormalizedMat(const RVec &mean, const RVec &sd) const;
 		EMat toUnnormalizedMat(const RVec &mean, const RVec &sd) const;
 		EMat toCovMat() const;
 		EMat toWCovMat(const RVec &weight, const bitset<MathU::CovMatOptionsNum> flags) const;

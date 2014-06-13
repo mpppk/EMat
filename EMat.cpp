@@ -41,6 +41,10 @@ namespace mc{
 		return MathU::normalize(mat_)["normalizedMat"];
 	}
 
+	EMat EMat::toNormalizedMat(const RVec &mean, const RVec &sd) const{
+		return MathU::normalize(mat_, mean, sd);
+	}
+
 	EMat EMat::toUnnormalizedMat(const RVec &mean, const RVec &sd) const{
 		return MathU::unnormalize(mat_, mean, sd);
 	}
