@@ -260,6 +260,19 @@ namespace mc{
 		return retMat;
 	}
 
+	// １行が(index-dim-1)〜(index)までの値を持つ行列に変換する
+	cv::Mat MathU::toMultiDim(const RVec &vec, const int dim){
+		cv::Mat mat(vec.size(), dim, CV_64F);
+		for(int vec_i = 0; vec_i < vec.size(); vec_i++){
+			for(int dim_i = 0; dim_i < dim; dim_i++){
+				int matColIndex = (dim - 1) - dim_i;
+				int vecIndex = ( (vec_i - dim_i) >= 0 )? (vec_i - dim_i) : 0;
+				mat.at<double>(vec_i, matColIndex) = vec[vecIndex];
+			}
+		}
+		return mat;
+	}
+
 	cv::Mat MathU::normalize(const cv::Mat &data, const cv::Mat &mean, const cv::Mat &sd){
 		return normalize(data, RVec(mean), RVec(sd));
 	}

@@ -65,6 +65,9 @@ namespace mc{
 		// 移動平均を計算する。着目要素からwidth-1個を計算に含める。最初の0〜(width-1)個の要素に対しては何もしない。
 		static cv::Mat movingAverage(const cv::Mat &mat, const int width);
 
+		// １行が(index-dim-1)〜(index)までの値を持つ行列に変換する
+		static cv::Mat toMultiDim(const RVec &vec, const int dim);
+
 		static cv::Mat normalize(const cv::Mat &data, const cv::Mat &mean, const cv::Mat &sd);
 		static cv::Mat normalize(const cv::Mat &data, const RVec &mean, const RVec &sd);
 
