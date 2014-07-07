@@ -343,12 +343,20 @@ TEST(MathUTest, calcWCovTest){
 	EXPECT_DOUBLE_EQ(60/9.0, covarMat(1, 1));
 }
 
-// calcWCovMatが正しく動作しているかのテスト
+// ユークリッド距離の計算が正しく動作しているかのテスト
 TEST(MathUTest, calcEuclideanDistTest){
 	cv::Mat point1 = (cv::Mat_<double>(1,3) << 1, 2, 3);
 	cv::Mat point2 = (cv::Mat_<double>(1,3) << 3, 4, 4);
 	double dist = mc::MathU::calcEuclideanDist(point1, point2);
 	EXPECT_DOUBLE_EQ(dist, 3);
+}
+
+// 移動平均の計算が正しく行われているか
+TEST(MathUTest, movingAverageTest){
+	cv::Mat mat = getTempMat();
+	cv::Mat MAMat = mc::MathU::movingAverage(mat, 3);
+	EXPECT_DOUBLE_EQ(2, MAMat.at<double>(0, 2));
+	EXPECT_DOUBLE_EQ(8, MAMat.at<double>(2, 2));
 }
 
 int main( int argc, char* argv[] ){

@@ -238,6 +238,28 @@ namespace mc{
 		return variance;
 	}
 
+	// 移動平均を計算する。着目要素からwidth-1個を計算に含める。最初の0〜(width-1)個の要素に対しては何もしない。
+	cv::Mat MathU::movingAverage(const cv::Mat &mat, const int arg_width){
+		int width = arg_width - 1;
+		cv::Mat retMat(mat.rows, mat.cols, CV_64F);
+		auto retIt = retMat.begin<double>();
+		for(auto it = mat.begin<double>(); it != (mat.begin<double>()+width); it++){
+			*retIt = *it;
+			retIt++;
+		}
+		for(auto it = ( mat.begin<double>()+width ); it != mat.end<double>(); it++){
+			double sum = 0;
+			int cnt = 0;
+			for(auto widthIt = (it-width); widthIt != it+1; widthIt++){
+				sum += *widthIt;
+				cnt++;
+			}
+			*retIt = sum/(width+1);
+			retIt++;
+		}
+		return retMat;
+	}
+
 	cv::Mat MathU::normalize(const cv::Mat &data, const cv::Mat &mean, const cv::Mat &sd){
 		return normalize(data, RVec(mean), RVec(sd));
 	}

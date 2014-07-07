@@ -62,6 +62,9 @@ namespace mc{
 		static RVec toEachColsSD(const cv::Mat &data, const RVec &mean, const RVec &squareMean);
 		static RVec toEachColsVariance(const RVec sd);
 
+		// 移動平均を計算する。着目要素からwidth-1個を計算に含める。最初の0〜(width-1)個の要素に対しては何もしない。
+		static cv::Mat movingAverage(const cv::Mat &mat, const int width);
+
 		static cv::Mat normalize(const cv::Mat &data, const cv::Mat &mean, const cv::Mat &sd);
 		static cv::Mat normalize(const cv::Mat &data, const RVec &mean, const RVec &sd);
 
