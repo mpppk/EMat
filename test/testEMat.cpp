@@ -363,10 +363,10 @@ TEST(MathUTest, movingAverageTest){
 TEST(MathUTest, toMultiDimTest){
 	cv::Mat mat = getTempMat();
 	mc::RVec rvec = mat.reshape(1, 1);// 1チャンネル１行の行列に変換
-	cout << rvec.m() << endl;
+	// cout << rvec.m() << endl;
 	int dim = 3;
 	cv::Mat newMat = mc::MathU::toMultiDim(rvec, dim);
-	cout << newMat << endl;
+	// cout << newMat << endl;
 	EXPECT_DOUBLE_EQ(rvec.size(), newMat.rows);
 	EXPECT_DOUBLE_EQ(dim, newMat.cols);
 	EXPECT_DOUBLE_EQ(1, newMat.at<double>(0, 0));
@@ -374,6 +374,20 @@ TEST(MathUTest, toMultiDimTest){
 	EXPECT_DOUBLE_EQ(7, newMat.at<double>(8, 0));
 	EXPECT_DOUBLE_EQ(9, newMat.at<double>(8, 2));
 }
+
+// 次元を増やす処理が正しく行われているか
+TEST(MathUTest, toMultiDimFromMatTest){
+	cv::Mat mat = getTempMat();
+	int dim = 3;
+	cv::Mat newMat = mc::MathU::toMultiDim(mat, dim);
+	EXPECT_DOUBLE_EQ(mat.rows, newMat.rows);
+	EXPECT_DOUBLE_EQ(mat.cols * dim, newMat.cols);
+	cout << newMat << endl;
+	EXPECT_DOUBLE_EQ(7, newMat.at<double>(2, 2));
+	EXPECT_DOUBLE_EQ(8, newMat.at<double>(2, 5));
+	EXPECT_DOUBLE_EQ(9, newMat.at<double>(2, 8));
+}
+
 
 int main( int argc, char* argv[] ){
     ::testing::InitGoogleTest( &argc, argv );

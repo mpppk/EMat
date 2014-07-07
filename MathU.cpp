@@ -273,6 +273,16 @@ namespace mc{
 		return mat;
 	}
 
+	// 各列について、toMultiDimを行う
+	cv::Mat MathU::toMultiDim(const cv::Mat &mat, const int dim){
+		cv::Mat retMat = toMultiDim((RVec)(mat.col(0).t()), dim);
+		for(int col_i = 1; col_i < mat.cols; col_i++){
+			RVec vec = mat.col(col_i).t();
+			retMat = MatU::mergeMatToSide( retMat, toMultiDim(mat.col(col_i), dim) );
+		}
+		return retMat;
+	}
+	
 	cv::Mat MathU::normalize(const cv::Mat &data, const cv::Mat &mean, const cv::Mat &sd){
 		return normalize(data, RVec(mean), RVec(sd));
 	}

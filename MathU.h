@@ -7,6 +7,7 @@
 // #include <iomanip>
 // #include <opencv2/opencv.hpp>
 #include <RVec.h>
+#include <MatU.h>
 
 using namespace std;
 
@@ -66,7 +67,9 @@ namespace mc{
 		static cv::Mat movingAverage(const cv::Mat &mat, const int width);
 
 		// １行が(index-dim-1)〜(index)までの値を持つ行列に変換する
+		// 引数がRVecとcv::Matの場合で処理が違うので注意
 		static cv::Mat toMultiDim(const RVec &vec, const int dim);
+		static cv::Mat toMultiDim(const cv::Mat &mat, const int dim);
 
 		static cv::Mat normalize(const cv::Mat &data, const cv::Mat &mean, const cv::Mat &sd);
 		static cv::Mat normalize(const cv::Mat &data, const RVec &mean, const RVec &sd);
