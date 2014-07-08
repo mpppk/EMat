@@ -357,6 +357,11 @@ TEST(MathUTest, movingAverageTest){
 	cv::Mat MAMat = mc::MathU::movingAverage(mat, 3);
 	EXPECT_DOUBLE_EQ(2, MAMat.at<double>(0, 2));
 	EXPECT_DOUBLE_EQ(8, MAMat.at<double>(2, 2));
+
+	cv::Mat mat2 = getTempMat(1, 10, 2);
+	cv::Mat MAMat2 = mc::MathU::movingAverageToEachCol(mat2, 2);
+	EXPECT_DOUBLE_EQ(2, MAMat2.at<double>(1, 0));
+	EXPECT_DOUBLE_EQ(19, MAMat2.at<double>(9, 1));
 }
 
 // 次元を増やす処理が正しく行われているか
@@ -382,7 +387,6 @@ TEST(MathUTest, toMultiDimFromMatTest){
 	cv::Mat newMat = mc::MathU::toMultiDim(mat, dim);
 	EXPECT_DOUBLE_EQ(mat.rows, newMat.rows);
 	EXPECT_DOUBLE_EQ(mat.cols * dim, newMat.cols);
-	cout << newMat << endl;
 	EXPECT_DOUBLE_EQ(7, newMat.at<double>(2, 2));
 	EXPECT_DOUBLE_EQ(8, newMat.at<double>(2, 5));
 	EXPECT_DOUBLE_EQ(9, newMat.at<double>(2, 8));

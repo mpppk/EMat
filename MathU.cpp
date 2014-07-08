@@ -260,6 +260,15 @@ namespace mc{
 		return retMat;
 	}
 
+	cv::Mat MathU::movingAverageToEachCol(const cv::Mat &mat, const int arg_width){
+		cv::Mat retMat = cv::Mat::zeros(mat.rows, mat.cols, CV_64F);
+		for(int col_i = 0; col_i < mat.cols; col_i++){
+			retMat.col(col_i) = movingAverage(mat.col(col_i), arg_width);
+			movingAverage(mat.col(col_i), arg_width).copyTo(retMat.col(col_i));
+		}
+		return retMat;
+	}
+
 	// １行が(index-dim-1)〜(index)までの値を持つ行列に変換する
 	cv::Mat MathU::toMultiDim(const RVec &vec, const int dim){
 		cv::Mat mat(vec.size(), dim, CV_64F);
