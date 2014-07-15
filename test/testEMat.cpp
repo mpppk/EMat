@@ -351,6 +351,16 @@ TEST(MathUTest, calcEuclideanDistTest){
 	EXPECT_DOUBLE_EQ(dist, 3);
 }
 
+// マハラノビス距離の計算が正しく動作しているかのテスト
+TEST(MathUTest, calcMahalanobisDistTest){
+	cv::Mat point1 = (cv::Mat_<double>(1,2) << 1, 2);
+	cv::Mat point2 = (cv::Mat_<double>(1,2) << 3, 4);
+	cv::Mat icover = (cv::Mat_<double>(2,2) << 1, 0, 0, 1);
+	double dist = mc::MathU::calcMahalanobisDist(point1, point2, icover);
+	double dist2 = cv::Mahalanobis(point1, point2, icover);
+	EXPECT_DOUBLE_EQ(dist, dist2);
+}
+
 // 移動平均の計算が正しく行われているか
 TEST(MathUTest, movingAverageTest){
 	cv::Mat mat = getTempMat();

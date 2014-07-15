@@ -1,5 +1,6 @@
 // ユーザー定義
 #include <MathU.h>
+#include <cmath>
 
 using namespace std;
 
@@ -366,6 +367,11 @@ namespace mc{
 		}
 
 		return sqrt(dist);
+	}
+
+	double MathU::calcMahalanobisDist(const RVec &point1, const RVec &point2, const cv::Mat &icover){
+		RVec diff = point1.m() - point2.m();
+		return sqrt( ( diff.m() * icover ).dot( diff.m() ) );
 	}
 }
 

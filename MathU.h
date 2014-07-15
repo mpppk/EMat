@@ -85,6 +85,9 @@ namespace mc{
 
 		static double calcEuclideanDist(const cv::Mat &point1, const cv::Mat &point2);
 		static double calcEuclideanDist(const RVec &point1, const RVec &point2);
+
+		// マハラノビス距離を計算する
+		static double calcMahalanobisDist(const RVec &point1, const RVec &point2, const cv::Mat &icover);
 	};
 }
 
