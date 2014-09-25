@@ -264,8 +264,30 @@ namespace mc{
 	cv::Mat MathU::movingAverageToEachCol(const cv::Mat &mat, const int arg_width){
 		cv::Mat retMat = cv::Mat::zeros(mat.rows, mat.cols, CV_64F);
 		for(int col_i = 0; col_i < mat.cols; col_i++){
-			retMat.col(col_i) = movingAverage(mat.col(col_i), arg_width);
 			movingAverage(mat.col(col_i), arg_width).copyTo(retMat.col(col_i));
+		}
+		return retMat;
+	}
+
+	RVec MathU::temporalResolution(const RVec &vec, const int width){
+		vector<double> result;
+		unsigned int vec_i = 0;
+		while(1){
+			double sum = 0;
+			if( (vec_i + (width-1) ) >= vec.size() ) { break; }
+			for(int i = 0; i < width; i++){
+				sum += vec[ vec_i++ ];
+			}
+			result.push_back(sum / width);
+		}
+		return RVec(result);
+	}
+
+	cv::Mat MathU::temporalResolutionToEachCol(const cv::Mat &mat, const int width){
+		cv::Mat retMat = cv::Mat::zeros(mat.rows / width, mat.cols, CV_64F);
+		for(int col_i = 0; col_i < mat.cols; col_i++){
+			cv::Mat colResult = temporalResolution(mat.col(col_i).t(), width).m().t();
+			colResult.copyTo(retMat.col(col_i));
 		}
 		return retMat;
 	}
@@ -285,7 +307,7 @@ namespace mc{
 
 	// 各列について、toMultiDimを行う
 	cv::Mat MathU::toMultiDim(const cv::Mat &mat, const int dim){
-		cv::Mat retMat = toMultiDim((RVec)(mat.col(0).t()), dim);
+		cv::Mat retMat = toMultiDim((RVec)(mat.col(0).t()), dim);// 最初の一回はここで
 		for(int col_i = 1; col_i < mat.cols; col_i++){
 			RVec vec = mat.col(col_i).t();
 			retMat = MatU::mergeMatToSide( retMat, toMultiDim(mat.col(col_i), dim) );

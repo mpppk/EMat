@@ -395,6 +395,16 @@ TEST(MathUTest, movingAverageTest){
 	EXPECT_DOUBLE_EQ(19, MAMat2.at<double>(9, 1));
 }
 
+// 時間解像度の変更が正しく行われるか
+TEST(MathUTest, temporalResolutionTest){
+	cv::Mat mat = getTempMat(1, 10, 2);
+	cv::Mat TRMat = mc::MathU::temporalResolutionToEachCol(mat, 3);
+	EXPECT_DOUBLE_EQ(3, TRMat.rows);
+	EXPECT_DOUBLE_EQ(2, TRMat.cols);
+	EXPECT_DOUBLE_EQ(3, TRMat.at<double>(0, 0));
+	EXPECT_DOUBLE_EQ(16, TRMat.at<double>(2, 1));
+}
+
 // 次元を増やす処理が正しく行われているか
 TEST(MathUTest, toMultiDimTest){
 	cv::Mat mat = getTempMat();
