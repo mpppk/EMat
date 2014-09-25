@@ -2,6 +2,8 @@
 
 using namespace std;
 
+template<class T> inline std::string toString(T x) {std::ostringstream sout;sout<<x;return sout.str();}
+
 namespace mc{
 	bool RVec::isValid() const{
 		if(mat_.rows != 1)	return false;
@@ -22,6 +24,10 @@ namespace mc{
 	}
 
 	RVec::RVec(const vector<string>& content) : mat_(toMat(content)){
+		if(!isValid())	throw invalid_argument("mat is not vector!");
+	}
+
+	RVec::RVec(const vector<double>& content) : mat_(toMat(content)){
 		if(!isValid())	throw invalid_argument("mat is not vector!");
 	}
 
@@ -99,5 +105,14 @@ namespace mc{
 		}
 		return mat;
 	}
+
+	cv::Mat RVec::toMat(const vector<double>& content){
+		vector<string> strContent;
+		for(const double &value : content){
+			strContent.push_back( toString<double>( value ) );
+		}
+		return toMat(strContent);
+	}
+
 }
 

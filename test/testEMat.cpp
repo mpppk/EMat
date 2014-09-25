@@ -48,7 +48,6 @@ vector< vector<string> > getTempVec(int startValue = 1, int rowsNum = 3, int col
 		}
 		contents.push_back(content);
 	}
-
 	return contents;
 }
 
@@ -61,6 +60,38 @@ cv::Mat getTempMat(int cnt = 1, const int row = 3, const int col = 3){
 		}
 	}
 	return mat;
+}
+
+class RVecTest : public ::testing::Test{
+protected:
+	string fileDirPass;
+
+	virtual void SetUp(){
+		// ファイルの書きだし先
+		fileDirPass = "../test/TestRVec/";
+	}
+};
+
+TEST_F(RVecTest, constructorTest){
+	ASSERT_THROW( mc::RVec rvec(getTempMat() ), invalid_argument );
+
+	// vector<double>からRVecを生成する
+	vector<double> vec{1, 2, 3};
+	mc::RVec rvec(vec);
+	EXPECT_EQ(1, rvec[0]);
+
+	// vector<string>からRVecを生成する
+	vector<string> vec2{"1", "2", "3"};
+	mc::RVec rvec2(vec2);
+	EXPECT_EQ(1, rvec2[0]);
+}
+
+TEST_F(RVecTest, operatorTest){
+	cv::Mat mat = ( cv::Mat_<double>(1, 3) << 1,2,3 );
+	mc::RVec rvec = mat;
+	EXPECT_EQ(3, rvec[2]);
+	rvec[0] = 4;
+	EXPECT_EQ(4, rvec[0]);
 }
 
 class EMatTest : public ::testing::Test{
@@ -116,16 +147,6 @@ TEST_F(EMatTest, normalizeTest){
 	EXPECT_EQ(1, emat3.m().at<double>(0, 0));
 	EXPECT_EQ(5, emat3.m().at<double>(4, 0));
 	EXPECT_EQ(9, emat3.m().at<double>(0, 1));
-}
-
-TEST_F(EMatTest, RVecTest){
-	ASSERT_THROW( mc::RVec rvec(getTempMat() ), invalid_argument );
-	cv::Mat mat = ( cv::Mat_<double>(1, 3) << 1,2,3 );
-	mc::RVec rvec = mat;
-	EXPECT_EQ(3, rvec[2]);
-	rvec[0] = 4;
-	EXPECT_EQ(4, rvec[0]);
-	// cout << rvec << endl;
 }
 
 class MatUTest : public ::testing::Test{

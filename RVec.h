@@ -17,6 +17,8 @@ namespace mc{
 		RVec(const cv::MatExpr& mate);
 		// RVec(const cv::Mat& mat) const;
 		RVec(const vector<string>& content);
+		RVec(const vector<double>& content);
+
 		// ---------- 演算子オーバーロード ----------
 		/** cv::Matを=で代入できるようにするための演算子オーバーロード **/
 		RVec& operator=(const cv::Mat& mat);
@@ -36,6 +38,7 @@ namespace mc{
 		const cv::Mat& m() const;
 		static vector<RVec> cast(vector<cv::Mat> mats);
 		static cv::Mat toMat(const vector<string>& content);
+		static cv::Mat toMat(const vector<double>& content);
 	};
 
 	// ostream& operator<< (ostream& os, const mc::RVec& rvec) {
