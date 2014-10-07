@@ -411,12 +411,20 @@ TEST(MathUTest, movingAverageTest){
 
 // 時間解像度の変更が正しく行われるか
 TEST(MathUTest, temporalResolutionTest){
-	cv::Mat mat = getTempMat(1, 10, 2);
-	cv::Mat TRMat = mc::MathU::temporalResolutionToEachCol(mat, 3);
-	EXPECT_DOUBLE_EQ(3, TRMat.rows);
-	EXPECT_DOUBLE_EQ(2, TRMat.cols);
-	EXPECT_DOUBLE_EQ(3, TRMat.at<double>(0, 0));
-	EXPECT_DOUBLE_EQ(16, TRMat.at<double>(2, 1));
+	const int WIDTH = 3;
+	const int DIM = 2;
+	cv::Mat mat = getTempMat(1, 1, 10);
+	auto map = mc::MathU::temporalResolution(mat, WIDTH, DIM);
+	EXPECT_EQ(2, map.at("x").at<double>(0, 0));
+	EXPECT_EQ(5, map.at("x").at<double>(0, 1));
+	EXPECT_EQ(5, map.at("y").at<double>(0, 0));
+	EXPECT_EQ(6, map.at("x").at<double>(4, 0));
+	EXPECT_EQ(9, map.at("x").at<double>(4, 1));
+	EXPECT_EQ(9, map.at("y").at<double>(4, 0));
+	EXPECT_EQ(5, map.at("x").rows);
+	EXPECT_EQ(DIM, map.at("x").cols);
+	EXPECT_EQ(5, map.at("y").rows);
+
 }
 
 // 次元を増やす処理が正しく行われているか

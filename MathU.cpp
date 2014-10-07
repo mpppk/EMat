@@ -269,27 +269,30 @@ namespace mc{
 		return retMat;
 	}
 
-	RVec MathU::temporalResolution(const RVec &vec, const int width){
-		vector<double> result;
-		unsigned int vec_i = 0;
-		while(1){
-			double sum = 0;
-			if( (vec_i + (width-1) ) >= vec.size() ) { break; }
-			for(int i = 0; i < width; i++){
-				sum += vec[ vec_i++ ];
-			}
-			result.push_back(sum / width);
-		}
-		return RVec(result);
-	}
+	map<string, cv::Mat> MathU::temporalResolution(const RVec &vec, const int width, const int dim){
+		map<string, cv::Mat> results;
+		vector<RVec> xvecs;
+		vector<double> ys;
+		cv::Mat smoothMat = movingAverage(vec.m(), width);
+		// 平滑化されていない部分は飛ばす
+		auto it = smoothMat.begin<double>();
+		for(int i = 0; i < width-1; i++){ it++; }
 
-	cv::Mat MathU::temporalResolutionToEachCol(const cv::Mat &mat, const int width){
-		cv::Mat retMat = cv::Mat::zeros(mat.rows / width, mat.cols, CV_64F);
-		for(int col_i = 0; col_i < mat.cols; col_i++){
-			cv::Mat colResult = temporalResolution(mat.col(col_i).t(), width).m().t();
-			colResult.copyTo(retMat.col(col_i));
+		for(; it != smoothMat.end<double>(); it++){
+			RVec xvec(dim);
+			if(  ( it + (dim - 1) * width ) == smoothMat.end<double>() ){
+				break;
+			}
+			for(int i = 0; i < dim; i++){
+				xvec[i] = *(it + i * width);
+			}
+			xvecs.push_back(xvec);
+			ys.push_back( *( it + (dim - 1) * width ) );
 		}
-		return retMat;
+		results["x"] = MatU::toMat(xvecs);
+		results["y"] = cv::Mat(ys).clone();
+		// 移動平均を計算して、いい感じに入力と出力の関係をピックアップしていく
+		return results;
 	}
 
 	// １行が(index-dim-1)〜(index)までの値を持つ行列に変換する
