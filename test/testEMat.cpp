@@ -182,6 +182,20 @@ TEST_F(MatUTest, toMatTest){
 	// cv::Mat toMat(const vector< vector<string> >& contents);
 	cv::Mat mat2 = mc::MatU::toMat(getTempVec());
 	EXPECT_EQ( 3, mat.at<double>(0, 2) );
+
+	// cv::Mat toMat(const vector<RVec>& vecs)
+	vector<mc::RVec> vecs;
+	vecs.push_back( cv::Mat::ones(1, 3, CV_64F) );
+	vecs.push_back( cv::Mat::ones(1, 3, CV_64F) * 2 );
+	vecs.push_back( cv::Mat::ones(1, 3, CV_64F) * 3 );
+	cv::Mat mat3 = mc::MatU::toMat( vecs );
+	EXPECT_EQ( 1, mat3.at<double>(0, 0) );
+	EXPECT_EQ( 2, mat3.at<double>(1, 1) );
+	EXPECT_EQ( 3, mat3.at<double>(2, 2) );
+
+	// 列数が違う行があったときに例外を吐くかチェック
+	vecs.push_back(cv::Mat::ones(1, 2, CV_64F) * 4);
+	EXPECT_THROW( mc::MatU::toMat( vecs ), invalid_argument );
 }
 
 TEST_F(MatUTest, copyRowTest){

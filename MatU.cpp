@@ -34,7 +34,17 @@ namespace mc{
 			vec[i] = boost::lexical_cast<double>(content[i]);
 		}
 		return vec;
+	}
 
+	cv::Mat MatU::toMat(const vector<RVec>& vecs){
+		cv::Mat result = cv::Mat::ones(vecs.size(), vecs[0].size(), CV_64F) * -999;
+		for(int i = 0; i < vecs.size(); i++){
+			if( vecs[i].size() != vecs[0].size() ){
+				throw invalid_argument(" in MatU::toMat(const vector<RVec>& vecs)");
+			}
+			vecs[i].m().copyTo(result.row(i));
+		}
+		return result;
 	}
 
 	cv::Mat MatU::toMat(const vector< vector<string> >& contents){// static

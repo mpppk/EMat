@@ -19,6 +19,7 @@ namespace mc{
 		static cv::Mat toMat(const vector<string>& content);
 		static RVec toRVec(const vector<string>& content);
 		static cv::Mat toMat(const vector< vector<string> >& contents);
+		static cv::Mat toMat(const vector<RVec>& vecs);
 
 		//srcの指定した行からdstの指定した行へをコピーする
 		static void copyRow(const cv::Mat &src, cv::Mat &dst, const unsigned int srcRowIndex, unsigned int dstRowIndex);
