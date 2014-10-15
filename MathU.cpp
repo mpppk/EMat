@@ -269,29 +269,27 @@ namespace mc{
 		return retMat;
 	}
 
-	map<string, cv::Mat> MathU::temporalResolution(const RVec &vec, const int width, const int dim){
+	map<string, cv::Mat> MathU::temporalResolution(const RVec &vec, const int width, const int xdim, const int ydim){
+		if( xdim < ydim ){ throw invalid_argument("ydim is big than xdim.(in MathU::temporalResolution)"); }
+
 		map<string, cv::Mat> results;
-		vector<RVec> xvecs;
-		vector<double> ys;
+		vector<RVec> xvecs, yvecs;
 		cv::Mat smoothMat = movingAverage(vec.m(), width);
 		// 平滑化されていない部分は飛ばす
 		auto it = smoothMat.begin<double>();
 		for(int i = 0; i < width-1; i++){ it++; }
 
 		for(; it != smoothMat.end<double>(); it++){
-			RVec xvec(dim);
-			if(  ( it + (dim - 1) * width ) == smoothMat.end<double>() ){
-				break;
-			}
-			for(int i = 0; i < dim; i++){
-				xvec[i] = *(it + i * width);
-			}
+			RVec xvec(xdim), yvec(ydim);
+			if( ( it + (xdim - 1) * width ) == smoothMat.end<double>() ){ break; }
+			for(int i = 0; i < xdim; i++){ xvec[i] = *(it + i * width); }
+			for(int i = 0; i < ydim; i++){ yvec[i] = xvec[i + xdim - ydim]; }// ydimに応じてxvecをコピー
+
 			xvecs.push_back(xvec);
-			ys.push_back( *( it + (dim - 1) * width ) );
+			yvecs.push_back(yvec);
 		}
 		results["x"] = MatU::toMat(xvecs);
-		results["y"] = cv::Mat(ys).clone();
-		// 移動平均を計算して、いい感じに入力と出力の関係をピックアップしていく
+		results["y"] = MatU::toMat(yvecs);
 		return results;
 	}
 

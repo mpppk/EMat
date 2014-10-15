@@ -69,7 +69,7 @@ namespace mc{
 		static cv::Mat movingAverageToEachCol(const cv::Mat &mat, const int arg_width);
 
 		// 時間解像度を変更する。(指定した区間ごとの平均値を計算した結果を返す)
-		static map<string, cv::Mat> temporalResolution(const RVec &vec, const int width, const int dim);
+		static map<string, cv::Mat> temporalResolution(const RVec &vec, const int width, const int xdim, const int ydim = 1);
 
 		// １行が(index-dim-1)〜(index)までの値を持つ行列に変換する
 		// 引数がRVecとcv::Matの場合で処理が違うので注意

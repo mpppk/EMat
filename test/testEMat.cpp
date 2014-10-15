@@ -412,9 +412,10 @@ TEST(MathUTest, movingAverageTest){
 // 時間解像度の変更が正しく行われるか
 TEST(MathUTest, temporalResolutionTest){
 	const int WIDTH = 3;
-	const int DIM = 2;
+	const int XDIM = 2;
+	const int YDIM = 2;
 	cv::Mat mat = getTempMat(1, 1, 10);
-	auto map = mc::MathU::temporalResolution(mat, WIDTH, DIM);
+	auto map = mc::MathU::temporalResolution(mat, WIDTH, XDIM);
 	EXPECT_EQ(2, map.at("x").at<double>(0, 0));
 	EXPECT_EQ(5, map.at("x").at<double>(0, 1));
 	EXPECT_EQ(5, map.at("y").at<double>(0, 0));
@@ -422,9 +423,20 @@ TEST(MathUTest, temporalResolutionTest){
 	EXPECT_EQ(9, map.at("x").at<double>(4, 1));
 	EXPECT_EQ(9, map.at("y").at<double>(4, 0));
 	EXPECT_EQ(5, map.at("x").rows);
-	EXPECT_EQ(DIM, map.at("x").cols);
+	EXPECT_EQ(XDIM, map.at("x").cols);
 	EXPECT_EQ(5, map.at("y").rows);
 
+	// yがxと同じ次元のとき
+	map = mc::MathU::temporalResolution(mat, WIDTH, XDIM, YDIM);
+	EXPECT_EQ(2, map.at("x").at<double>(0, 0));
+	EXPECT_EQ(2, map.at("y").at<double>(0, 0));
+	EXPECT_EQ(9, map.at("x").at<double>(4, 1));
+	EXPECT_EQ(9, map.at("y").at<double>(4, 1));
+	EXPECT_EQ( map.at("x").rows , map.at("y").rows);
+	EXPECT_EQ( map.at("x").cols , map.at("y").cols);
+
+	// 不正な引数を与えたとき
+	ASSERT_THROW( mc::MathU::temporalResolution(mat, WIDTH, XDIM, XDIM+1), invalid_argument );
 }
 
 // 次元を増やす処理が正しく行われているか
