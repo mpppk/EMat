@@ -9,6 +9,7 @@ namespace mc{
 	class RVec{
 	private:
 		bool isValid() const;
+		string getErrorMessage() const;
 		cv::Mat mat_;
 	public:
 		RVec(){}

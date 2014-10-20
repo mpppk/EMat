@@ -10,29 +10,32 @@ namespace mc{
 		return true;
 	}
 
+	string RVec::getErrorMessage() const{
+		return "mat is not vector!¥nrow:" + toString(mat_.rows) + "¥ncol:" + toString(mat_.cols);
+	}
+
 	RVec::RVec(const unsigned int size) : mat_(cv::Mat(1, size, CV_64F)){
-		if(!isValid())	throw invalid_argument("mat is not vector!");
-		// mat_ = cv::Mat(0, size, CV_64F);
+		if(!isValid())	throw invalid_argument( getErrorMessage() );
 	}
 
 	RVec::RVec(const cv::Mat& mat) : mat_(mat){
-		if(!isValid())	throw invalid_argument("mat is not vector!");
+		if(!isValid())	throw invalid_argument( getErrorMessage() );
 	}
 
 	RVec::RVec(const cv::MatExpr& mate) : mat_(mate){
-		if(!isValid())	throw invalid_argument("mat is not vector!");
+		if(!isValid())	throw invalid_argument( getErrorMessage() );
 	}
 
 	RVec::RVec(const vector<string>& content) : mat_(toMat(content)){
-		if(!isValid())	throw invalid_argument("mat is not vector!");
+		if(!isValid())	throw invalid_argument( getErrorMessage() );
 	}
 
 	RVec::RVec(const vector<double>& content) : mat_(toMat(content)){
-		if(!isValid())	throw invalid_argument("mat is not vector!");
+		if(!isValid())	throw invalid_argument( getErrorMessage() );
 	}
 
 	RVec& RVec::operator=(const cv::Mat& mat){
-		if(!isValid())	throw invalid_argument("mat is not vector!");
+		if(!isValid())	throw invalid_argument( getErrorMessage() );
 		mat_ = mat;
 		return *this;
 	}
