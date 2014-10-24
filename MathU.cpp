@@ -396,6 +396,21 @@ namespace mc{
 		RVec diff = point1.m() - point2.m();
 		return sqrt( ( diff.m() * icover ).dot( diff.m() ) );
 	}
+
+	RVec MathU::correctBaseLine(const RVec &data){
+		RVec newData = data.m().clone();
+		constexpr int WIDTH = 7;
+		constexpr array<int, WIDTH> RATES = {2, 12, 30, 40, 30, 12, 2};
+		const int RATES_SUM = accumulate(RATES.begin(), RATES.end(), 0);
+		constexpr int MID = WIDTH/2;
+		
+		for(int i = MID; i < data.size() - MID; i++){
+			newData[i] = 0;
+			for(int j = -MID; j < MID; j++){ newData[i] += data[i + j] * RATES[j + MID]; }
+			newData[i] = data[i] - (newData[i] / RATES_SUM);
+		}
+		return newData;
+	}
 }
 
 

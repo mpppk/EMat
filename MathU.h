@@ -8,6 +8,7 @@
 // #include <opencv2/opencv.hpp>
 #include <RVec.h>
 #include <MatU.h>
+#include <numeric>
 
 using namespace std;
 
@@ -91,6 +92,9 @@ namespace mc{
 
 		// マハラノビス距離を計算する
 		static double calcMahalanobisDist(const RVec &point1, const RVec &point2, const cv::Mat &icover);
+
+		// ガウシアンのたたみ込みによってベースラインを補正する(幅は7で固定)
+		static RVec correctBaseLine(const RVec &data);
 	};
 }
 

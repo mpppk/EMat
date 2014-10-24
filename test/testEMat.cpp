@@ -467,6 +467,10 @@ TEST(MathUTest, toMultiDimFromMatTest){
 	EXPECT_DOUBLE_EQ(9, newMat.at<double>(2, 8));
 }
 
+TEST(MathUTest, correctBaseLineTest){
+	mc::RVec vec = mc::MathU::correctBaseLine( getTempMat(1, 1, 10) );
+	EXPECT_DOUBLE_EQ(0.109375, vec[3]);// これが正しいのか自信ない
+}
 
 int main( int argc, char* argv[] ){
     ::testing::InitGoogleTest( &argc, argv );
