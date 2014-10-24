@@ -11,7 +11,7 @@ namespace mc{
 	}
 
 	string RVec::getErrorMessage() const{
-		return "mat is not vector!¥nrow:" + toString(mat_.rows) + "¥ncol:" + toString(mat_.cols);
+		return "mat is not vector!\nrow:" + toString(mat_.rows) + "\ncol:" + toString(mat_.cols);
 	}
 
 	RVec::RVec(const unsigned int size) : mat_(cv::Mat(1, size, CV_64F)){
