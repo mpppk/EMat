@@ -14,6 +14,40 @@ using namespace std;
 
 namespace mc{
 	class MathU{
+
+		// ガウシアンを計算する
+		class Gaussian{
+			double dim_;// 次元数
+			RVec mean_;// 平均
+			cv::Mat s_;// 分散共分散行列
+		public:
+			/**
+			 * @param[in] dim 	次元数
+			 * @param[in] mean 	平均
+			 * @param[in] s 	共分散行列
+			 */
+			Gaussian(const double dim, const RVec mean, const cv::Mat s);
+			/** Gaussianの計算を行う
+			 *	@param[in] x 	入力データ
+			 */
+			double calc(const RVec x) const;
+		private:
+			/**
+			 * 与えられた値が正しいかどうかをチェックする
+			 * @param  dim 	次元数 
+			 * @param  mean 平均
+			 * @param  s 	共分散行列
+			 * @return   	正しいかどうか
+			 */
+			bool isValid(const double dim, const RVec mean, const cv::Mat s) const;
+			/**
+			 * 与えられた値が正しいかどうかをチェックする
+			 * @param  x 入力データ
+			 * @return   正しいかどうか
+			 */
+			bool isValid(const RVec x) const;
+		};
+
 	public:
 		enum CovMatOptions{
 			SCALE,

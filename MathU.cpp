@@ -6,6 +6,29 @@ using namespace std;
 
 namespace mc{
 
+	MathU::Gaussian::Gaussian(const double dim, const RVec mean, const cv::Mat s)
+		: dim_(dim), mean_(mean), s_(s){};
+
+	double MathU::Gaussian::calc(const RVec x) const{
+		if ( !isValid(x) ){
+			throw invalid_argument("x is invalid in MathU::Gaussian::calc");
+		}
+		double e = ( -0.5 * ( x.m() - mean_.m() ).t() * s_.inv() ).dot( x.m() - mean_.m() );
+		double u = pow( sqrt(2*CV_PI), dim_ ) * sqrt(cv::norm(s_));
+		return (1.0 / u) * exp(e);
+	}
+
+	bool MathU::Gaussian::isValid(const double dim, const RVec mean, const cv::Mat s) const{
+		if( mean.size() != dim ){ return false; }
+		if( s.rows != dim ){ return false; }
+		if( s.cols != dim ){ return false; }
+		return true;
+	}
+	bool MathU::Gaussian::isValid(const RVec x) const{
+		if( x.size() == mean_.size() ){ return false; }
+		return true;
+	}
+
 	// L1normを計算する
 	double MathU::calcL1norm(const cv::Mat &vec){
 		return calcL1norm(RVec(vec));
