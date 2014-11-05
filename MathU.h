@@ -14,8 +14,11 @@ using namespace std;
 
 namespace mc{
 	class MathU{
+	public:
 
-		// ガウシアンを計算する
+		/**
+		 * ガウシアンを計算するクラス
+		 */
 		class Gaussian{
 			double dim_;// 次元数
 			RVec mean_;// 平均
@@ -26,26 +29,36 @@ namespace mc{
 			 * @param[in] mean 	平均
 			 * @param[in] s 	共分散行列
 			 */
-			Gaussian(const double dim, const RVec mean, const cv::Mat s);
+			Gaussian(const double dim, const RVec& mean, const cv::Mat& s);
+			Gaussian(const double mean, const double sigma);
 			/** Gaussianの計算を行う
 			 *	@param[in] x 	入力データ
 			 */
-			double calc(const RVec x) const;
+			double calc(const RVec& x) const;
+			/** １次元のGaussianの計算を行う
+			 *	@param[in] x 	入力データ
+			 */
+			double calc(const double x) const;
+			/**
+			 * 与えられたデータとの畳み込みを行う。
+			 * １次元のガウシアンである場合のみ利用可能。
+			 * 最初と最後のw * σ分のデータには何もしない。
+			 * @param[in] x 	入力データ
+			 * @param[in] s 	σの値
+			 * @param[in] w 	シグマの何倍までを計算に用いるか
+			 */
+			static RVec convolute(const RVec& x, const int s, const int w = 2);
 		private:
 			/**
-			 * 与えられた値が正しいかどうかをチェックする
-			 * @param  dim 	次元数 
-			 * @param  mean 平均
-			 * @param  s 	共分散行列
-			 * @return   	正しいかどうか
+			 * メンバ変数の値が正しいかどうかをチェックする
 			 */
-			bool isValid(const double dim, const RVec mean, const cv::Mat s) const;
+			bool isValid() const;
 			/**
 			 * 与えられた値が正しいかどうかをチェックする
 			 * @param  x 入力データ
 			 * @return   正しいかどうか
 			 */
-			bool isValid(const RVec x) const;
+			bool isValid(const RVec& x) const;
 		};
 
 	public:

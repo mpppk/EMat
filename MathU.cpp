@@ -6,27 +6,53 @@ using namespace std;
 
 namespace mc{
 
-	MathU::Gaussian::Gaussian(const double dim, const RVec mean, const cv::Mat s)
-		: dim_(dim), mean_(mean), s_(s){};
+	MathU::Gaussian::Gaussian(const double dim, const RVec& mean, const cv::Mat& s)
+	: dim_(dim), mean_(mean), s_(s){
+		if( !isValid() ){ invalid_argument("invalid argument in MathU::Gaussian::Gaussian"); }
+	};
 
-	double MathU::Gaussian::calc(const RVec x) const{
-		if ( !isValid(x) ){
-			throw invalid_argument("x is invalid in MathU::Gaussian::calc");
-		}
+	MathU::Gaussian::Gaussian(const double mean, const double sigma)
+	: dim_(1), mean_( cv::Mat::ones(1, 1, CV_64F) * mean ), s_( cv::Mat::ones(1, 1, CV_64F) * sigma ){
+		if( !isValid() ){ invalid_argument("invalid argument in MathU::Gaussian::Gaussian"); }
+	}
+	
+	double MathU::Gaussian::calc(const RVec& x) const{
+		if ( !isValid(x) ){ throw invalid_argument("x is invalid in MathU::Gaussian::calc"); }
 		double e = ( -0.5 * ( x.m() - mean_.m() ).t() * s_.inv() ).dot( x.m() - mean_.m() );
 		double u = pow( sqrt(2*CV_PI), dim_ ) * sqrt(cv::norm(s_));
 		return (1.0 / u) * exp(e);
 	}
 
-	bool MathU::Gaussian::isValid(const double dim, const RVec mean, const cv::Mat s) const{
-		if( mean.size() != dim ){ return false; }
-		if( s.rows != dim ){ return false; }
-		if( s.cols != dim ){ return false; }
+	double MathU::Gaussian::calc(const double x) const{
+		if( dim_ != 1 ){ throw invalid_argument("dim is not 1. You must use RVec as Gaussian::calc() argument"); }
+		return calc( cv::Mat::ones(1, 1, CV_64F) * x );
+	}
+
+	bool MathU::Gaussian::isValid() const{
+		if( mean_.size() != dim_ ){ return false; }
+		if( s_.rows != dim_ ){ return false; }
+		if( s_.cols != dim_ ){ return false; }
 		return true;
 	}
-	bool MathU::Gaussian::isValid(const RVec x) const{
-		if( x.size() == mean_.size() ){ return false; }
+	bool MathU::Gaussian::isValid(const RVec& x) const{
+		if( x.size() != mean_.size() ){ return false; }
 		return true;
+	}
+
+	RVec MathU::Gaussian::convolute(const RVec& x, const int s, const int w){
+		int sw = s * w;
+		if( x.size() < sw ){ throw invalid_argument("x length is too short. x must have more w * σ size. "); }
+		RVec ret = x.m().clone();
+		for(int i = sw; i < (x.size() - sw); i++){
+			double sum = 0, value = 0;
+			Gaussian g(i, s);
+			for(int j = -sw; j <= sw; j++){
+				value += x[i + j] * g.calc(i + j);
+				sum += g.calc(i + j);
+			}
+			ret[i] -= value/sum;
+		}
+		return ret;
 	}
 
 	// L1normを計算する

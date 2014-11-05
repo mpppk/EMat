@@ -472,6 +472,19 @@ TEST(MathUTest, correctBaseLineTest){
 	EXPECT_DOUBLE_EQ(0.109375, vec[3]);// これが正しいのか自信ない
 }
 
+class GaussianTest : public ::testing::Test{
+protected:
+	virtual void SetUp(){
+		// ファイルの書きだし先
+	}
+};
+
+TEST(GaussianTest, calcTest){
+	const int sigma  = 1;
+	const int width = 2;
+	mc::RVec rvec = mc::MathU::Gaussian::convolute( getTempMat(1, 1, 10), sigma, width);
+}
+
 int main( int argc, char* argv[] ){
     ::testing::InitGoogleTest( &argc, argv );
     return RUN_ALL_TESTS();
