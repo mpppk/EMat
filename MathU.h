@@ -40,14 +40,21 @@ namespace mc{
 			 */
 			double calc(const double x) const;
 			/**
-			 * 与えられたデータとの畳み込みを行う。
-			 * １次元のガウシアンである場合のみ利用可能。
+			 * 与えられたデータと、平均0である１次元のガウシアンの畳み込みを行う。
 			 * 最初と最後のw * σ分のデータには何もしない。
 			 * @param[in] x 	入力データ
 			 * @param[in] s 	σの値
 			 * @param[in] w 	シグマの何倍までを計算に用いるか
 			 */
 			static RVec convolute(const RVec& x, const int s, const int w = 2);
+			/**
+			 * 整数が与えられた時の平均0のガウシアンの値をテーブルにして返す。
+			 * 与えられるデータが整数であることがわかっている場合はこちらの方が高速に計算できる。
+			 * ガウシアンが１次元の場合にしか使えない
+			 * @param[in] width 	テーブルを作成する範囲.デフォルトでは2σ
+			 */
+			static RVec createTable(const int sigma, const int range = 2);
+
 		private:
 			/**
 			 * メンバ変数の値が正しいかどうかをチェックする

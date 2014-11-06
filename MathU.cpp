@@ -43,14 +43,21 @@ namespace mc{
 		int sw = s * w;
 		if( x.size() < sw ){ throw invalid_argument("x length is too short. x must have more w * σ size. "); }
 		RVec ret = x.m().clone();
+		auto table = Gaussian::createTable(s);
 		for(int i = sw; i < (x.size() - sw); i++){
-			double sum = 0, value = 0;
-			Gaussian g(i, s);
-			for(int j = -sw; j <= sw; j++){
-				value += x[i + j] * g.calc(i + j);
-				sum += g.calc(i + j);
-			}
-			ret[i] -= value/sum;
+			double value = 0;
+			for(int j = -sw; j <= sw; j++){ value += x[i + j] * table[j + sw]; }// j + sw => index 0..sw
+			ret[i] -= value/calcTotalSum(table);
+		}
+		return ret;
+	}
+
+	RVec MathU::Gaussian::createTable(const int sigma, const int range){
+		Gaussian g(0, sigma);
+		RVec ret(sigma * range * 2 + 1);
+		for(int i = 0; i < ret.size(); i++){
+			ret[sigma * range - i] = g.calc(i);
+			ret[sigma * range + i] = ret[sigma * range - i];
 		}
 		return ret;
 	}

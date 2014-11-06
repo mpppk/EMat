@@ -483,6 +483,7 @@ TEST(GaussianTest, calcTest){
 	const int sigma  = 1;
 	const int width = 2;
 	mc::RVec rvec = mc::MathU::Gaussian::convolute( getTempMat(1, 1, 10), sigma, width);
+	// cout << rvec.m() << endl;
 }
 
 int main( int argc, char* argv[] ){
