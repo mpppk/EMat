@@ -54,10 +54,11 @@ namespace mc{
 
 	RVec MathU::Gaussian::createTable(const int sigma, const int range){
 		Gaussian g(0, sigma);
-		RVec ret(sigma * range * 2 + 1);
-		for(int i = 0; i < ret.size(); i++){
-			ret[sigma * range - i] = g.calc(i);
-			ret[sigma * range + i] = ret[sigma * range - i];
+		int sr = sigma * range;
+		RVec ret(sr * 2 + 1);
+		for(int i = 0; i <= sr; i++){
+			ret[sr - i] = g.calc(i);
+			ret[sr + i] = ret[sr - i];
 		}
 		return ret;
 	}
