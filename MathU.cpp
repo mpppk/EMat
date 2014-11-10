@@ -47,7 +47,7 @@ namespace mc{
 		for(int i = sw; i < (x.size() - sw); i++){
 			double value = 0;
 			for(int j = -sw; j <= sw; j++){ value += x[i + j] * table[j + sw]; }// j + sw => index 0..sw
-			ret[i] -= value/calcTotalSum(table);
+			ret[i] = value/calcTotalSum(table);
 		}
 		return ret;
 	}
