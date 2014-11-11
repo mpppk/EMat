@@ -41,7 +41,7 @@ namespace mc{
 
 	RVec MathU::Gaussian::convolute(const RVec& x, const int s, const int w){
 		int sw = s * w;
-		if( x.size() < sw ){ throw invalid_argument("x length is too short. x must have more w * σ size. "); }
+		if( x.size() < sw * 2 + 1 ){ throw invalid_argument("x length is too short. x must have more w * σ size. "); }
 		RVec ret = x.m().clone();
 		auto table = Gaussian::createTable(s);
 		for(int i = sw; i < (x.size() - sw); i++){
