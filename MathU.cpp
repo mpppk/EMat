@@ -42,13 +42,17 @@ namespace mc{
 	RVec MathU::Gaussian::convolute(const RVec& x, const int s, const int w){
 		int sw = s * w;
 		if( x.size() < sw * 2 + 1 ){ throw invalid_argument("x length is too short. x must have more w * σ size. "); }
-		RVec ret = x.m().clone();
+		RVec ret(x.size());
 		auto table = Gaussian::createTable(s);
 		for(int i = sw; i < (x.size() - sw); i++){
 			double value = 0;
 			for(int j = -sw; j <= sw; j++){ value += x[i + j] * table[j + sw]; }// j + sw => index 0..sw
 			ret[i] = value/calcTotalSum(table);
 		}
+		// 計算できない最初と最後の部分には、端の値をそのまま使う
+		for(int i = 0; i < sw; i++){ ret[i] = ret[sw]; }
+		for(int i = x.size() - sw; i < x.size(); i++){ ret[i] = ret[x.size() - sw - 1]; }
+
 		return ret;
 	}
 
