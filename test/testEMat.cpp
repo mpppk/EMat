@@ -331,6 +331,10 @@ TEST_F(MatUTest, mergeMatToBottomTest){
 	EXPECT_EQ(-99, mat3.at<double>(5, 1));
 }
 
+TEST_F(MatUTest, writeCSVTest){
+	mc::MatU::writeCSV( mc::RVec( getTempMat(1, 1, 10) ), "./writeCSVTest.csv" );
+}
+
 class MathUTest : public ::testing::Test{
 protected:
 	string fileDirPass;

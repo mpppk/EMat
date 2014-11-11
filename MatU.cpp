@@ -216,5 +216,13 @@ namespace mc{
 
 		return mergedMat;
 	}
+
+	void MatU::writeCSV(const RVec &vec, const string filePath){
+		RVec index(vec.size());
+		for(int i = 0; i < vec.size(); ++i){ index[i] = i; }
+		ofstream ofs(filePath);
+		ofs << cv::format( mergeMatToSide(index.m().t(), vec.m().t()), "csv" );
+	}
+
 }
 

@@ -3,6 +3,8 @@
 
 #pragma once
 #include <RVec.h>
+#include <fstream>
+
 // #include <boost/lexical_cast.hpp>
 
 using namespace std;
@@ -49,5 +51,8 @@ namespace mc{
 		static cv::Mat mergeMatToBottom(const cv::Mat &mat1, const cv::Mat &mat2, const int fillBlankNum = 0);
 
 		static cv::Mat mergeMatToBottom(const vector<cv::Mat> &mats, const int fillBlankNum = 0);
+
+		static void writeCSV(const RVec &vec, const string filePath);
+
 	};
 }
